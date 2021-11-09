@@ -1,6 +1,7 @@
 package it.unisalento.sonoff;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -47,10 +48,14 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        if(response.equals("ON"))
+                        if(response.equals("ON")) {
                             textView.setText("Accesso consentito");
-                        else
+                            textView.setTextColor(Color.GREEN);
+                        }
+                        else{
                             textView.setText("Accesso non consentito");
+                            textView.setTextColor(Color.RED);
+                        }
                     }
 
                     @Override

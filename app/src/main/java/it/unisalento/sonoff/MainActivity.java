@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity{
         textView = findViewById(R.id.textView);
 
         RestService restService = new RestService(getApplicationContext());
-        restService.saveToken("prova");
         restService.getStatus(this.lockSwitch);
 
 
