@@ -33,37 +33,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String title = remoteMessage.getData().get("title");
         String message = remoteMessage.getData().get("body");
-        
-       /* ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> services = activityManager
-                .getRunningTasks(Integer.MAX_VALUE);
 
-        boolean isActivityFound = false;
-
-        if (services.get(0).topActivity.getPackageName().toString()
-                .equalsIgnoreCase(getApplicationContext().getPackageName().toString())) {
-            isActivityFound = true;
-        }
-
-        *//*if (isActivityFound) {
-            if(message.equals("ON"))
-                MainActivity.setLockSwitch(true);
-            else
-                MainActivity.setLockSwitch(false);
-        } else {
-            // write your code to build a notification.
-            // return the notification you built here
-        }       *//*
-
-
-        if(message.equals("ON")){
-            senderInterface.send(true);
-
-        }
-        else{
-            senderInterface.send(false);
-
-        }*/
+        //TODO: qui, dopo aver ricevuto la notifica dovrei riuscire a prendere i riferimenti della view in MainActivity
         showNotification(title, message);
     }
 
