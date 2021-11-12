@@ -40,7 +40,7 @@ public class MQTTHelper {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("MQTT connect", "connected succesfull");
+                    Log.d("MQTT connect", "connected succesfull");
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(100);
@@ -52,7 +52,7 @@ public class MQTTHelper {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT connect", "Failed to connect to: " + brokerAddress + exception.toString());
+                    Log.d("MQTT connect", "Failed to connect to: " + brokerAddress + exception.toString());
                 }
             });
         } catch (MqttException ex){
@@ -65,14 +65,14 @@ public class MQTTHelper {
             mqttAndroidClient.subscribe(subscriptionTopic, 2, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("MQTT subscibe","Subscribed!");
-                    Log.w("MQTT subscibe","Trying to get status...");
+                    Log.d("MQTT subscibe","Subscribed!");
+                    Log.d("MQTT subscibe","Trying to get status...");
                     publish("cmnd/tasmota_8231A8/Power1", "");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT subscribe", "Subscribe failed!");
+                    Log.d("MQTT subscribe", "Subscribe failed!");
                 }
             });
 
@@ -88,12 +88,12 @@ public class MQTTHelper {
             mqttAndroidClient.publish(subscriptionTopic, mqttMessage, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("MQTT publish", "Meesage sent correctly, token" + asyncActionToken);
+                    Log.d("MQTT publish", "Meesage sent correctly, token" + asyncActionToken);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT publish", "Failed to sent meesage, token:" + asyncActionToken);
+                    Log.d("MQTT publish", "Failed to sent meesage, token:" + asyncActionToken);
 
                 }
             });
