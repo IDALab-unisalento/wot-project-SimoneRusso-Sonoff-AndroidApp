@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Log.w("messageArrived", "stato: " + mqttMessage);
+                Log.w("messageArrived", "state: " + mqttMessage);
                 if(mqttMessage.toString().equals("ON"))
                     lockSwitch.setChecked(true);
                 else
@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                Log.w("messageDelivered", "stato cambiato " + iMqttDeliveryToken);
+                Log.w("messageDelivered", "state changed ");
 
             }
         });
-        mqttHelper.connect("stat/tasmota_8231A8/POWER1");
+        mqttHelper.connect();
     }
 }

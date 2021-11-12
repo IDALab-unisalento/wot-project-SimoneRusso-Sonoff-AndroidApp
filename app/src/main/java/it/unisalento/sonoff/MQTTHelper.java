@@ -22,44 +22,39 @@ public class MQTTHelper {
 
 
     public MQTTHelper(Context context){
-        Log.w("MQTTHELPER", "Starting connection" );
         clientId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         mqttAndroidClient = new MqttAndroidClient(context, brokerAddress, clientId);
+        Log.d("MQTTHelper constructor", "Client created: " + clientId );
+
     }
 
     public void setCallback(MqttCallbackExtended callback) {
         mqttAndroidClient.setCallback(callback);
     }
 
-    public void connect(String subscriptionTopic){
+    public void connect(){
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
-
         try {
-
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-
-                    Log.w("MQTT CONNECT", "connect() succesfull");
+                    Log.w("MQTT connect", "connected succesfull");
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(100);
                     disconnectedBufferOptions.setPersistBuffer(false);
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-
-                    subscribeToTopic(subscriptionTopic);
+                    subscribeToTopic("stat/tasmota_8231A8/POWER1");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT CONNECT", "Failed to connect to: " + brokerAddress + exception.toString());
+                    Log.w("MQTT connect", "Failed to connect to: " + brokerAddress + exception.toString());
                 }
             });
-
-
         } catch (MqttException ex){
             ex.printStackTrace();
         }
@@ -70,19 +65,19 @@ public class MQTTHelper {
             mqttAndroidClient.subscribe(subscriptionTopic, 2, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("MQTT SUBSCRIBE","Subscribed!");
-                    Log.w("MQTT SUBSCRIBE","Chiedo aggiornamento!");
+                    Log.w("MQTT subscibe","Subscribed!");
+                    Log.w("MQTT subscibe","Trying to get status...");
                     publish("cmnd/tasmota_8231A8/Power1", "");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT SUBSCRIBE", "Subscribed fail!");
+                    Log.w("MQTT subscribe", "Subscribe failed!");
                 }
             });
 
         } catch (MqttException ex) {
-            System.err.println("Exception whilst subscribing");
+            System.err.println("Exception while subscribing");
             ex.printStackTrace();
         }
     }
@@ -93,12 +88,12 @@ public class MQTTHelper {
             mqttAndroidClient.publish(subscriptionTopic, mqttMessage, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("MQTT PUBLISH", "Meesage sent correctly, token" + asyncActionToken);
+                    Log.w("MQTT publish", "Meesage sent correctly, token" + asyncActionToken);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("MQTT PUBLISH", "Failed to sent meesage, token:" + asyncActionToken);
+                    Log.w("MQTT publish", "Failed to sent meesage, token:" + asyncActionToken);
 
                 }
             });
