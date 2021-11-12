@@ -12,53 +12,30 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import android.provider.Settings.Secure;
+
 
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
     final String serverUri = "tcp://192.168.1.100:1883";
-
-    final String clientId = "ExampleAndroidClient";
-    //final String subscriptionTopic = "test/topic";
-    //String subscriptionTopic;
+    private String clientId;
 
 
-    public MQTTHelper(Context context, String subscriptionTopic){
+    public MQTTHelper(Context context){
         Log.w("MQTTHELPER", "Starting connection" );
+        clientId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
-        mqttAndroidClient.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean b, String s) {
-
-            }
-
-            @Override
-            public void connectionLost(Throwable throwable) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-
-            }
-        });
-        connect(subscriptionTopic);
     }
 
     public void setCallback(MqttCallbackExtended callback) {
         mqttAndroidClient.setCallback(callback);
     }
 
-    private void connect(String subscriptionTopic){
+    public void connect(String subscriptionTopic){
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
-        //mqttConnectOptions.setUserName(username);
-        //mqttConnectOptions.setPassword(password.toCharArray());
 
         try {
 

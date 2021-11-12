@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startMqtt(){
-        mqttHelper = new MQTTHelper(getApplicationContext(),  "stat/tasmota_8231A8/POWER1");
+        mqttHelper = new MQTTHelper(getApplicationContext());
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
@@ -62,6 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        mqttHelper.connect("stat/tasmota_8231A8/POWER1");
     }
 }
