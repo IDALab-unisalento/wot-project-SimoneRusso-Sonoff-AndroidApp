@@ -15,9 +15,9 @@ public class Listener implements CompoundButton.OnCheckedChangeListener {
         String status = "";
         if(compoundButton.isPressed()){
             if(compoundButton.isChecked())
-                restService.changeStatusON(compoundButton, status);
+                restService.changeStatusON(compoundButton);
             else if (!compoundButton.isChecked())
-                restService.changeStatusOFF(compoundButton, status);
+                restService.changeStatusOFF(compoundButton);
 
         }
 

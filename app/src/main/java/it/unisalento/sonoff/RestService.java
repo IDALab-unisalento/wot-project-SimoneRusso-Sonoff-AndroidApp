@@ -35,7 +35,7 @@ public class RestService {
                 });
     }
 
-    public void changeStatusON(CompoundButton switcher, String status) {
+    public void changeStatusON(CompoundButton switcherx) {
         AndroidNetworking.get(address+"/changeStatusON")
                 .setPriority(Priority.LOW)
                 .build()
@@ -54,7 +54,7 @@ public class RestService {
                 });
     }
 
-    public void changeStatusOFF(CompoundButton switcher, String status) {
+    public void changeStatusOFF(CompoundButton switcher) {
         AndroidNetworking.get(address+"/changeStatusOFF")
                 .setPriority(Priority.LOW)
                 .build()
