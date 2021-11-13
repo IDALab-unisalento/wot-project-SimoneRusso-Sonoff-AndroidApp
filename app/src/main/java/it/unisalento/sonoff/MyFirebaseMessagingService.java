@@ -75,17 +75,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
-        sendRegistrationToServer(token);
-//eST_ti_0Q_CT-zRmfqYEWu:APA91bH9PDU-Ar-fyh5tgl1mqRMu40Cj8xDG4PtuKusJhU6aDVTFLpSohzE0chF5Z1vkvNcwxqVsKQWt979v4v7j4MJFcMfcAa_5tnT_4fSOJ4LJs_Fj9dCnR2MWyQZWEpOpnH4Xr-J6
-    }
-
-    private void sendRegistrationToServer(String token) {
         RestService restService = new RestService(getApplicationContext());
         restService.saveToken(token);
-
     }
+
 }
