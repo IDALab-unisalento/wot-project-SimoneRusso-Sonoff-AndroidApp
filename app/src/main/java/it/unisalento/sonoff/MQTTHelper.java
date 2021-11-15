@@ -82,10 +82,10 @@ public class MQTTHelper {
         }
     }
 
-    public void publish(String subscriptionTopic, String message){
+    public void publish(String topicopic, String message){
         MqttMessage mqttMessage = new MqttMessage(message.getBytes());
         try {
-            mqttAndroidClient.publish(subscriptionTopic, mqttMessage, null, new IMqttActionListener() {
+            mqttAndroidClient.publish(topic, mqttMessage, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Log.d("MQTT publish", "Meesage sent correctly, token" + asyncActionToken);
