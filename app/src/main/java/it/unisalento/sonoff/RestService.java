@@ -1,6 +1,7 @@
 package it.unisalento.sonoff;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -11,14 +12,16 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 
 public class RestService {
+    String address = "http://192.168.1.67:8081";
+    String clientId;
+
     public RestService(Context context) {
         AndroidNetworking.initialize(context);
+        clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    String address = "http://192.168.1.67:8081";
-
     public void getStatus(Switch switcher){
-        AndroidNetworking.get(address+"/getStatus")
+        AndroidNetworking.get(address+"/getStatus/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
