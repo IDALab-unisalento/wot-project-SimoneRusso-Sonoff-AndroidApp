@@ -2,9 +2,9 @@ package it.unisalento.sonoff;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -14,6 +14,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch lockSwitch;
     TextView statusTextView;
     MQTTHelper mqttHelper;
@@ -22,16 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         lockSwitch = (Switch) findViewById(R.id.lockSwitch);
         statusTextView = (TextView) findViewById(R.id.statusTextView);
-
         startMqtt();
-
         Listener listener = new Listener(mqttHelper);
-
         lockSwitch.setOnCheckedChangeListener(listener);
-
     }
 
     private void startMqtt(){
@@ -43,22 +39,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void connectionLost(Throwable throwable) {
-
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Log.w("messageArrived", "state: " + mqttMessage);
+            public void messageArrived(String topic, MqttMessage mqttMessage){
+                Log.d("messageArrived", "state: " + mqttMessage);
                 if(mqttMessage.toString().equals("ON"))
                     lockSwitch.setChecked(true);
                 else
                     lockSwitch.setChecked(false);
-
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                Log.w("messageDelivered", "state changed ");
+                Log.d("messageDelivered", "state changed ");
 
             }
         });
