@@ -1,23 +1,30 @@
 package it.unisalento.sonoff;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class MainActivity extends AppCompatActivity{
 
     Switch lockSwitch;
     Button button;
     TextView textView;
+    private static final String REQUEST_ACCEPT = "Notification";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
         lockSwitch = findViewById(R.id.lockSwitch);
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
@@ -31,4 +38,15 @@ public class MainActivity extends AppCompatActivity{
         lockSwitch.setOnCheckedChangeListener(listener);
         button.setOnClickListener(listener);
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = intent.getStringExtra("status");
+            Log.d("receiver", "Got message: " + status);
+            lockSwitch.setChecked(status.equals("ON"));
+        }
+
+    };
+
 }
