@@ -27,7 +27,7 @@ public class RestService {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (getStatus()):", "stato corrente " + response);
+                        Log.d("Rest (getStatus()):", "stato corrente " + response);
                         switcher.setChecked(response.equals("ON"));
                     }
 
@@ -44,7 +44,7 @@ public class RestService {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (getStatus()):", "stato corrente " + response);
+                        Log.d("Rest (getStatus()):", "stato corrente " + response);
                         if(response.equals("ON")) {
                             textView.setText("Accesso consentito");
                             textView.setTextColor(Color.GREEN);
@@ -68,10 +68,9 @@ public class RestService {
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
-
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "stato corrente " + response);
                     }
 
                     @Override
@@ -87,10 +86,9 @@ public class RestService {
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
-
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "stato corrente " + response);
                     }
 
                     @Override

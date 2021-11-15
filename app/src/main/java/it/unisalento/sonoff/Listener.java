@@ -21,9 +21,7 @@ public class Listener implements CompoundButton.OnCheckedChangeListener, View.On
                 restService.changeStatusON(compoundButton);
             else if (!compoundButton.isChecked())
                 restService.changeStatusOFF(compoundButton);
-
         }
-
     }
 
     @Override
