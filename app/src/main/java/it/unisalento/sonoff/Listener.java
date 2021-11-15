@@ -12,13 +12,11 @@ public class Listener implements CompoundButton.OnCheckedChangeListener {
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        String status = "";
         if(compoundButton.isPressed()){
             if(compoundButton.isChecked())
                 restService.changeStatusON(compoundButton);
             else if (!compoundButton.isChecked())
                 restService.changeStatusOFF(compoundButton);
-
         }
 
     }
