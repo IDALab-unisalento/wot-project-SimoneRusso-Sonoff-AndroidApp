@@ -65,14 +65,15 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton switcher) {
+    public void changeStatusON(CompoundButton switcher, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusON/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "status changed");
+                        textView.setText("");
                     }
 
                     @Override
@@ -83,14 +84,15 @@ public class RestService {
                 });
     }
 
-    public void changeStatusOFF(CompoundButton switcher) {
+    public void changeStatusOFF(CompoundButton switcher, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "status changed ");
+                        textView.setText("");
                     }
 
                     @Override
