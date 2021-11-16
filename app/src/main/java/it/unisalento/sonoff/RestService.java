@@ -2,6 +2,7 @@ package it.unisalento.sonoff;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -17,14 +18,16 @@ import org.json.JSONArray;
 
 
 public class RestService {
+    String address = "http://192.168.1.67:8082";
+    String clientId;
+
     public RestService(Context context) {
         AndroidNetworking.initialize(context);
+        clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    String address = "http://192.168.1.67:8082";
-
     public void getStatus(Switch switcher){
-        AndroidNetworking.get(address+"/getStatus")
+        AndroidNetworking.get(address+"/getStatus/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -41,7 +44,7 @@ public class RestService {
                 });
     }
     public void getStatus(TextView textView){
-        AndroidNetworking.get(address+"/getStatus")
+        AndroidNetworking.get(address+"/getStatus/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -67,7 +70,7 @@ public class RestService {
 
 
     public void changeStatusON(CompoundButton switcher) {
-        AndroidNetworking.get(address+"/changeStatusON")
+        AndroidNetworking.get(address+"/changeStatusON/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -86,7 +89,7 @@ public class RestService {
     }
 
     public void changeStatusOFF(CompoundButton switcher) {
-        AndroidNetworking.get(address+"/changeStatusOFF")
+        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
