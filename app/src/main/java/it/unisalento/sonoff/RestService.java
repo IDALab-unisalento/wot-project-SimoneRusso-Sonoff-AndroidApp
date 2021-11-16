@@ -18,7 +18,7 @@ import org.json.JSONArray;
 
 
 public class RestService {
-    String address = "http://192.168.1.67:8082";
+    String address = "http://172.20.10.4:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -69,7 +69,7 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton switcher) {
+    public void changeStatusON(CompoundButton switcher, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusON/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
@@ -77,7 +77,8 @@ public class RestService {
 
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "status changed" + response);
+                        textView.setText("");
                     }
 
                     @Override
@@ -88,7 +89,7 @@ public class RestService {
                 });
     }
 
-    public void changeStatusOFF(CompoundButton switcher) {
+    public void changeStatusOFF(CompoundButton switcher, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
@@ -96,7 +97,8 @@ public class RestService {
 
                     @Override
                     public void onResponse(String response) {
-                        Log.w("Rest (changeStatus()):", "stato corrente " + response);
+                        Log.d("Rest (changeStatus()):", "status changed " + response);
+                        textView.setText("");
                     }
 
                     @Override

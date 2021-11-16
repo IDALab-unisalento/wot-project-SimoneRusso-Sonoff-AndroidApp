@@ -18,9 +18,9 @@ public class Listener implements CompoundButton.OnCheckedChangeListener, View.On
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         if(compoundButton.isPressed()){
             if(compoundButton.isChecked())
-                restService.changeStatusON(compoundButton);
+                restService.changeStatusON(compoundButton, textView);
             else if (!compoundButton.isChecked())
-                restService.changeStatusOFF(compoundButton);
+                restService.changeStatusOFF(compoundButton, textView);
 
         }
 

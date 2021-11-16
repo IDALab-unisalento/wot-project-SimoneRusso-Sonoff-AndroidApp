@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -19,8 +21,10 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
-    private static final String REQUEST_ACCEPT = "Notification";
-
+    private static final String NOTIFICATION_RECEIVED = "NOTIFICATION_RECEIVED";
+    private static final String NOTIFICATION_ELABORATED = "NOTIFICATION_ELABORATED";
+    String title = new String();
+    String message = new String();
     public MyFirebaseMessagingService() {
         super();
     }
@@ -28,13 +32,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        String title = remoteMessage.getData().get("title");
-        String message = remoteMessage.getData().get("body");
-        showNotification(title, message);
+        title = remoteMessage.getData().get("title");
+        message = remoteMessage.getData().get("body");
         LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
-        Intent intent = new Intent(REQUEST_ACCEPT);
+        Intent intent = new Intent(NOTIFICATION_RECEIVED);
         intent.putExtra("status", message);
         broadcaster.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(NOTIFICATION_ELABORATED));
     }
 
     private void showNotification(String title, String message) {
@@ -67,4 +71,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RestService restService = new RestService(getApplicationContext());
         restService.saveToken(token);
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            boolean show = Boolean.parseBoolean(intent.getStringExtra("show"));
+            if(show){
+                showNotification(title, message);
+            }
+
+        }
+
+    };
 }
