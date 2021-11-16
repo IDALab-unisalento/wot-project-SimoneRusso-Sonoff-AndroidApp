@@ -84,7 +84,7 @@ public class RestService {
     }
 
     public void changeStatusOFF(CompoundButton switcher) {
-        AndroidNetworking.get(address+"/changeStatusOFF")
+        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
