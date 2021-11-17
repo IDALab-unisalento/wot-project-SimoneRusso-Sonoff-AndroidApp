@@ -18,15 +18,13 @@ public class MainActivity extends AppCompatActivity{
     Switch lockSwitch;
     Button button;
     TextView textView;
-    private static final String NOTIFICATION_RECEIVED = "NOTIFICATION_RECEIVED";
-    private static final String NOTIFICATION_ELABORATED = "NOTIFICATION_ELABORATED";
-
+    private static final String REQUEST_ACCEPT = "Notification";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(NOTIFICATION_RECEIVED));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
         lockSwitch = findViewById(R.id.lockSwitch);
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
@@ -45,19 +43,8 @@ public class MainActivity extends AppCompatActivity{
         @Override
         public void onReceive(Context context, Intent intent) {
             String status = intent.getStringExtra("status");
-            LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
-            Intent intentToFCM = new Intent(NOTIFICATION_ELABORATED);
-            if(lockSwitch.isChecked() && status.equals("ON")){
-                intentToFCM.putExtra("show", false);
-            }
-            else if(!lockSwitch.isChecked() && status.equals("OFF")){
-                intentToFCM.putExtra("show", false);
-            }
-            else{
-                intentToFCM.putExtra("show", true);
-                lockSwitch.setChecked(status.equals("ON"));
-            }
-            broadcaster.sendBroadcast(intent);
+            Log.d("receiver", "Got message: " + status);
+            lockSwitch.setChecked(status.equals("ON"));
         }
 
     };
