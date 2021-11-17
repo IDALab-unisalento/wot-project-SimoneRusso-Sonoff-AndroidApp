@@ -112,8 +112,7 @@ public class RestService {
     }
 
     public void saveToken(String token) {
-        AndroidNetworking.post(address+"/saveToken")
-                .addBodyParameter("token", token)
+        AndroidNetworking.post(address+"/saveToken/"+token)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONArray(new JSONArrayRequestListener() {
