@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height = "match_parent"
+    tools:context = ".LoginActivity">
+
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_above="@id/tvErLog"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="50dp"
+        android:textSize="70dp"/>
+
+    <TextView
+        android:id="@+id/tvErLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email o password errati!"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="7dp"
+        android:textSize="20dp"
+        android:textColor="@color/red"
+        android:layout_above="@id/etEmail"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="email"
+        android:inputType="textEmailAddress"
+        android:layout_centerInParent="true"
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="120dp" />
+
+    <EditText
+        android:id="@+id/etPwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/etEmail"
+        android:textSize="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="120dp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etPwd"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:text="Login"
+        android:textSize="20dp"/>
+
+
+</RelativeLayout>
