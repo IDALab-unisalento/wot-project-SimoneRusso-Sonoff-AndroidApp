@@ -1,4 +1,4 @@
-package it.unisalento.sonoff;
+package it.unisalento.sonoff.restService;
 
 import android.content.Context;
 import android.graphics.Color;

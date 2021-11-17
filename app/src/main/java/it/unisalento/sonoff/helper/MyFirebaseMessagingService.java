@@ -1,4 +1,4 @@
-package it.unisalento.sonoff;
+package it.unisalento.sonoff.helper;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,6 +16,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.restService.RestService;
+import it.unisalento.sonoff.view.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";

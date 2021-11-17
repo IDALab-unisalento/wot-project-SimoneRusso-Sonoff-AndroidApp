@@ -1,4 +1,4 @@
-package it.unisalento.sonoff;
+package it.unisalento.sonoff.view;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import it.unisalento.sonoff.listener.MainListener;
+import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.restService.RestService;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -38,21 +42,22 @@ public class MainActivity extends AppCompatActivity{
             tvAccess = findViewById(R.id.tvAccess);
             tvDashboard = findViewById(R.id.tvDashboard);
 
-            String role = getIntent().getStringExtra("role");
-            if(role.equals("admin")){
-                tvDashboard.setVisibility(View.VISIBLE);
-                tvDashboard.setClickable(true);
-            }
+            MainListener listener = new MainListener(this);
 
             LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
 
             RestService restService = new RestService(getApplicationContext());
             restService.getStatus(this.lockSwitch);
 
-            Listener listener = new Listener(this);
-
             lockSwitch.setOnCheckedChangeListener(listener);
             button.setOnClickListener(listener);
+
+            String role = getIntent().getStringExtra("role");
+            if(role.equals("admin")){
+                tvDashboard.setVisibility(View.VISIBLE);
+                tvDashboard.setClickable(true);
+                tvDashboard.setOnClickListener(listener);
+            }
         }
         else{
             Intent intent = new Intent(this, LoginActivity.class);

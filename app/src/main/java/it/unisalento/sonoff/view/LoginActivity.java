@@ -1,4 +1,4 @@
-package it.unisalento.sonoff;
+package it.unisalento.sonoff.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import it.unisalento.sonoff.listener.LoginListener;
+import it.unisalento.sonoff.R;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
@@ -21,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
         etPwd = findViewById(R.id.etPwd);
         tvErLog = findViewById(R.id.tvErLog);
         btnLogin = findViewById(R.id.btnLogin);
-        Listener listener = new Listener(this);
+        LoginListener listener = new LoginListener(this);
         btnLogin.setOnClickListener(listener);
     }
 

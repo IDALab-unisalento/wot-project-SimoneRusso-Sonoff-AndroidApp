@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Aggiungi utente"
+        android:textSize="35dp"
+        android:layout_above="@+id/tvErDash"
+        android:layout_marginBottom="50dp"/>
+
+    <TextView
+        android:id="@+id/tvErDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text=""
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:layout_above="@+id/etNewEmail"
+        android:layout_marginBottom="50dp"/>
+
+    <EditText
+        android:id="@+id/etNewEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="email"
+        android:inputType="textEmailAddress"
+        android:layout_centerInParent="true"
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="120dp" />
+
+    <EditText
+        android:id="@+id/etNewPwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="password"
+        android:inputType="text"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/etNewEmail"
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="120dp" />
+
+    <ImageButton
+        android:id="@+id/btnRandPwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_autorenew_30"
+        android:layout_toRightOf="@+id/etNewEmail"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
+        android:layout_below="@id/etNewEmail"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/etRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ruolo"
+        android:inputType="text"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/etNewPwd"
+        android:textSize="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="120dp" />
+
+    <Button
+        android:id="@+id/btnAddUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etRole"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:text="Aggiugni utente"
+        android:textSize="20dp"/>
+</RelativeLayout>
