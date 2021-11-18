@@ -6,5 +6,16 @@
     <string name="log_credential_error">Email o password errati!</string>
     <string name="access_ok">Accesso consentito</string>
     <string name="access_deny">Accesso non consentito</string>
+    <string name="dashboard"><u>Accedi alla dashboard</u></string>
+    <string name="add_user">Aggiungi utente</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="role">Ruolo</string>
+    <string name="login">Login</string>
+    <string name="sonoff">Sonoff</string>
+    <string name="lock">Lucchetto</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="access_request">Richiedi accesso</string>
 
 </resources>

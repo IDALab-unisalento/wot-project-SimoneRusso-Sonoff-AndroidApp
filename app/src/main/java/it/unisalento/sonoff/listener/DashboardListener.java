@@ -1,6 +1,5 @@
 package it.unisalento.sonoff.listener;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.util.Log;
@@ -100,7 +99,7 @@ public class DashboardListener implements View.OnClickListener {
                     Log.w("Firestore add", "Error adding document", e);
                     mAuth2.getCurrentUser().delete();
                     activity.getTvErDash().setText(R.string.error_dashboard);
-                    activity.getTvErDash().setTextColor(Color.GREEN);
+                    activity.getTvErDash().setTextColor(Color.parseColor("#983CFF"));
                     activity.getTvErDash().setVisibility(View.VISIBLE);
                 });
     }

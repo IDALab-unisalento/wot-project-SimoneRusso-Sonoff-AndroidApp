@@ -32,8 +32,10 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.btnAccess)
+        if(view.getId() == R.id.btnAccess) {
+
             restService.getStatus(mainActivity.getTvAccess());
+        }
         if(view.getId() == R.id.tvDashboard){
             Intent intent = new Intent(mainActivity, DashboardActivity.class);
             mainActivity.startActivity(intent);

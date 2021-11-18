@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -54,17 +55,22 @@ public class RestService {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
                         if(response.equals("ON")) {
                             textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.GREEN);
+                            textView.setTextColor(Color.parseColor("417A00"));
                         }
                         else{
                             textView.setText(R.string.access_deny);
                             textView.setTextColor(Color.RED);
                         }
+                        textView.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
+                        textView.setText(R.string.access_ok);
+                        textView.setTextColor(Color.parseColor("417A00"));
+                        textView.setVisibility(View.VISIBLE);
+
                     }
                 });
     }
