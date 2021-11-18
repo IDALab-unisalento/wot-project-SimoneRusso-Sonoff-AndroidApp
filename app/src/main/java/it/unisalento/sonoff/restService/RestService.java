@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -28,7 +29,7 @@ public class RestService {
     }
 
 
-    public void getStatus(Switch switcher){
+    public void getStatus(ToggleButton toggleButton){
         AndroidNetworking.get(address+"/getStatus/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
@@ -36,7 +37,7 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        switcher.setChecked(response.equals("ON"));
+                        toggleButton.setChecked(response.equals("ON"));
                     }
 
                     @Override
@@ -68,7 +69,7 @@ public class RestService {
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
                         textView.setText(R.string.access_ok);
-                        textView.setTextColor(Color.parseColor("417A00"));
+                        textView.setTextColor(Color.parseColor("#417A00"));
                         textView.setVisibility(View.VISIBLE);
 
                     }
@@ -76,7 +77,7 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton switcher, TextView textView) {
+    public void changeStatusON(CompoundButton toggleButton, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusON/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
@@ -91,12 +92,12 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
-                        switcher.setChecked(false);
+                        toggleButton.setChecked(false);
                     }
                 });
     }
 
-    public void changeStatusOFF(CompoundButton switcher, TextView textView) {
+    public void changeStatusOFF(CompoundButton toggleButton, TextView textView) {
         AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
                 .build()
@@ -111,7 +112,7 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
-                        switcher.setChecked(true);
+                        toggleButton.setChecked(true);
                     }
                 });
     }

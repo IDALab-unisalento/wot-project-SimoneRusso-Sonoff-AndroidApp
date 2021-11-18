@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -25,7 +25,7 @@ import it.unisalento.sonoff.restService.RestService;
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class MainActivity extends AppCompatActivity{
 
-    private Switch lockSwitch;
+    private ToggleButton toggleButton;
     private TextView tvAccess;
     private static final String REQUEST_ACCEPT = "Notification";
 
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity{
         if(mAuth.getCurrentUser() != null) {
             setContentView(R.layout.activity_main);
 
-            lockSwitch = findViewById(R.id.lockSwitch);
+            toggleButton = findViewById(R.id.toggleBtn);
             tvAccess = findViewById(R.id.tvAccess);
             TextView tvDashboard = findViewById(R.id.tvDashboard);
             Button button = findViewById(R.id.btnAccess);
@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity{
             LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
 
             RestService restService = new RestService(getApplicationContext());
-            restService.getStatus(this.lockSwitch);
+            restService.getStatus(this.toggleButton);
 
-            lockSwitch.setOnCheckedChangeListener(listener);
+            toggleButton.setOnCheckedChangeListener(listener);
             button.setOnClickListener(listener);
 
             String role = getIntent().getStringExtra("role");
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
         public void onReceive(Context context, Intent intent) {
             String status = intent.getStringExtra("status");
             Log.d("receiver", "Got message: " + status);
-            lockSwitch.setChecked(status.equals("ON"));
+            toggleButton.setChecked(status.equals("ON"));
         }
 
     };

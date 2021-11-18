@@ -110,6 +110,28 @@
                     android:orientation="vertical"
                     android:paddingBottom="50dp">
 
+                    <ToggleButton
+                        android:id="@+id/toggleBtn"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/custom_toggle"
+                        android:paddingTop="25sp"
+                        android:text="@string/lock"
+                        android:textOn=""
+                        android:textOff=""
+                        android:layout_gravity="center"
+                        />
+
+                    <!--<androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/lockSwitch"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:thumb="@drawable/custom_switch"
+                        app:track="@color/white"
+                        android:layout_gravity="center"
+
+                        />
 
                     <Switch
                         android:id="@+id/lockSwitch"
@@ -124,7 +146,8 @@
                         android:textOn="@string/on"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+                        tools:ignore="UseSwitchCompatOrMaterialXml"
+                        />-->
 
                     <TextView
                         android:id="@+id/tvAccess"
@@ -133,7 +156,7 @@
                         android:layout_gravity="center"
                         android:text=""
                         android:textSize="20sp"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
