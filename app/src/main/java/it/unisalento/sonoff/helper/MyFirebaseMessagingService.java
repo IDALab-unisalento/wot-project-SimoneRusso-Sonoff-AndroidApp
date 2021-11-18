@@ -1,5 +1,6 @@
 package it.unisalento.sonoff.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,14 +12,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import it.unisalento.sonoff.R;
-import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -30,7 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         String title = remoteMessage.getData().get("title");
         String message = remoteMessage.getData().get("body");
@@ -41,6 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         broadcaster.sendBroadcast(intent);
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private void showNotification(String title, String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -66,9 +72,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onNewToken(String token) {
+    public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        RestService restService = new RestService(getApplicationContext());
-        restService.saveToken(token);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> tokenObj = new HashMap<>();
+        tokenObj.put("token", token);
+        db.collection("tokens")
+                .add(tokenObj)
+                .addOnSuccessListener(documentReference -> Log.d("Firestore add", "DocumentSnapshot written with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("Firestore add", "Error adding document", e));
     }
 }

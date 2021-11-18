@@ -13,7 +13,6 @@ import it.unisalento.sonoff.R;
 public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPwd;
-    private Button btnLogin;
     private TextView tvErLog;
 
     @Override
@@ -23,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPwd = findViewById(R.id.etPwd);
         tvErLog = findViewById(R.id.tvErLog);
-        btnLogin = findViewById(R.id.btnLogin);
+        Button btnLogin = findViewById(R.id.btnLogin);
         LoginListener listener = new LoginListener(this);
         btnLogin.setOnClickListener(listener);
     }
@@ -32,23 +31,11 @@ public class LoginActivity extends AppCompatActivity {
         return etEmail;
     }
 
-    public void setEtEmail(EditText etEmail) {
-        this.etEmail = etEmail;
-    }
-
     public EditText getEtPwd() {
         return etPwd;
     }
 
-    public void setEtPwd(EditText etPwd) {
-        this.etPwd = etPwd;
-    }
-
     public TextView getTvErLog() {
         return tvErLog;
-    }
-
-    public void setTvErLog(TextView tvErLog) {
-        this.tvErLog = tvErLog;
     }
 }

@@ -1,5 +1,6 @@
 package it.unisalento.sonoff.view;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,27 +21,26 @@ import it.unisalento.sonoff.listener.MainListener;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.restService.RestService;
 
+@SuppressWarnings("FieldMayBeFinal")
+@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class MainActivity extends AppCompatActivity{
 
     private Switch lockSwitch;
-    private Button button;
     private TextView tvAccess;
-    private TextView tvDashboard;
     private static final String REQUEST_ACCEPT = "Notification";
-    private FirebaseAuth mAuth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null) {
             setContentView(R.layout.activity_main);
 
             lockSwitch = findViewById(R.id.lockSwitch);
-            button = findViewById(R.id.btnAccess);
             tvAccess = findViewById(R.id.tvAccess);
-            tvDashboard = findViewById(R.id.tvDashboard);
+            TextView tvDashboard = findViewById(R.id.tvDashboard);
+            Button button = findViewById(R.id.btnAccess);
 
             MainListener listener = new MainListener(this);
 
@@ -78,9 +78,5 @@ public class MainActivity extends AppCompatActivity{
 
     public TextView getTvAccess() {
         return tvAccess;
-    }
-
-    public void setTvAccess(TextView tvAccess) {
-        this.tvAccess = tvAccess;
     }
 }

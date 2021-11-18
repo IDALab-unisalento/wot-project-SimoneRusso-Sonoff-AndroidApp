@@ -19,22 +19,19 @@ public class DashboardActivity extends AppCompatActivity {
     private EditText etNewEmail;
     private EditText etNewPwd;
     private EditText etRole;
-    private Button btnAddUser;
-    private ImageButton btnRandPwd;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null) {
             tvErDash = findViewById(R.id.tvErDash);
             etNewEmail = findViewById(R.id.etNewEmail);
             etNewPwd = findViewById(R.id.etNewPwd);
             etRole = findViewById(R.id.etRole);
-            btnAddUser = findViewById(R.id.btnAddUser);
-            btnRandPwd = findViewById(R.id.btnRandPwd);
+            Button btnAddUser = findViewById(R.id.btnAddUser);
+            ImageButton btnRandPwd = findViewById(R.id.btnRandPwd);
 
             DashboardListener listener = new DashboardListener(this);
 
@@ -53,31 +50,15 @@ public class DashboardActivity extends AppCompatActivity {
         return etNewEmail;
     }
 
-    public void setEtNewEmail(EditText etNewEmail) {
-        this.etNewEmail = etNewEmail;
-    }
-
     public EditText getEtNewPwd() {
         return etNewPwd;
-    }
-
-    public void setEtNewPwd(EditText etNewPwd) {
-        this.etNewPwd = etNewPwd;
     }
 
     public TextView getTvErDash() {
         return tvErDash;
     }
 
-    public void setTvErDash(TextView tvErDash) {
-        this.tvErDash = tvErDash;
-    }
-
     public EditText getEtRole() {
         return etRole;
-    }
-
-    public void setEtRole(EditText etRole) {
-        this.etRole = etRole;
     }
 }

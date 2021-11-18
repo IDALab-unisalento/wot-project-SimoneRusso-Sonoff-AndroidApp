@@ -9,6 +9,7 @@ import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.DashboardActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class MainListener implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private RestService restService;
@@ -31,14 +32,11 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btnAccess:
-                restService.getStatus(mainActivity.getTvAccess());
-                break;
-            case R.id.tvDashboard:
-                Intent intent = new Intent(mainActivity, DashboardActivity.class);
-                mainActivity.startActivity(intent);
-                break;
+        if(view.getId() == R.id.btnAccess)
+            restService.getStatus(mainActivity.getTvAccess());
+        if(view.getId() == R.id.tvDashboard){
+            Intent intent = new Intent(mainActivity, DashboardActivity.class);
+            mainActivity.startActivity(intent);
         }
     }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Sonoff</string>
+    <string name="operation_copleted">Operazione completata!</string>
+    <string name="error_dashboard">Si è verificato un errore!</string>
+    <string name="sys_log_err">Qualcosa non ha funzionato, riprova.\n Se il problema persiste riprova più tardi</string>
+    <string name="log_credential_error">Email o password errati!</string>
+    <string name="access_ok">Accesso consentito</string>
+    <string name="access_deny">Accesso non consentito</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package it.unisalento.sonoff.restService;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.provider.Settings;
@@ -11,12 +12,11 @@ import android.widget.TextView;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 
-import org.json.JSONArray;
+import it.unisalento.sonoff.R;
 
-
+@SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
     String address = "http://192.168.1.100:8082";
     String clientId;
@@ -25,6 +25,7 @@ public class RestService {
         AndroidNetworking.initialize(context);
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
+
 
     public void getStatus(Switch switcher){
         AndroidNetworking.get(address+"/getStatus/"+clientId)
@@ -52,11 +53,11 @@ public class RestService {
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
                         if(response.equals("ON")) {
-                            textView.setText("Accesso consentito");
+                            textView.setText(R.string.access_ok);
                             textView.setTextColor(Color.GREEN);
                         }
                         else{
-                            textView.setText("Accesso non consentito");
+                            textView.setText(R.string.access_deny);
                             textView.setTextColor(Color.RED);
                         }
                     }
@@ -105,22 +106,6 @@ public class RestService {
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
                         switcher.setChecked(true);
-                    }
-                });
-
-
-    }
-
-    public void saveToken(String token) {
-        AndroidNetworking.post(address+"/saveToken/"+token)
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                    }
-                    @Override
-                    public void onError(ANError error) {
                     }
                 });
     }
