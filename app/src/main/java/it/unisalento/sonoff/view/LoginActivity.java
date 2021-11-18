@@ -38,4 +38,5 @@ public class LoginActivity extends AppCompatActivity {
     public TextView getTvErLog() {
         return tvErLog;
     }
+
 }

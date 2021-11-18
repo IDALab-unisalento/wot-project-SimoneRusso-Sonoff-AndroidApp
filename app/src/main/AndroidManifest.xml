@@ -19,7 +19,9 @@
             android:exported="true" />
         <activity
             android:name=".view.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme.FullScreen"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
