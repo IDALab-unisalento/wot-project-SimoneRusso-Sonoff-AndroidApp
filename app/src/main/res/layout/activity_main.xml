@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
         android:elevation="5dp"
         android:text="@string/sonoff"
         android:textColor="@color/white"
-        android:textSize="35sp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="35sp" />
 
     <TextView
         android:id="@+id/tvDashboard"
@@ -108,12 +108,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="50dp">
+                    android:paddingBottom="10dp">
 
                     <ToggleButton
                         android:id="@+id/toggleBtn"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/custom_toggle"
                         android:paddingTop="25sp"
@@ -122,32 +122,6 @@
                         android:textOff=""
                         android:layout_gravity="center"
                         />
-
-                    <!--<androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/lockSwitch"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:thumb="@drawable/custom_switch"
-                        app:track="@color/white"
-                        android:layout_gravity="center"
-
-                        />
-
-                    <Switch
-                        android:id="@+id/lockSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        android:minHeight="48dp"
-                        android:showText="true"
-                        android:text="@string/lock"
-                        android:textOff="@string/off"
-                        android:textOn="@string/on"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:ignore="UseSwitchCompatOrMaterialXml"
-                        />-->
 
                     <TextView
                         android:id="@+id/tvAccess"
