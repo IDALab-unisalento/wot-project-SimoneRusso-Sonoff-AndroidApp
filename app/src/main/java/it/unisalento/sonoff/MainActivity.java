@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage){
                 Log.d("messageArrived", "state: " + mqttMessage);
-                lockSwitch.setChecked(mqttMessage.toString().equals("ON"))
+                lockSwitch.setChecked(mqttMessage.toString().equals("ON"));
             }
 
             @Override
