@@ -110,18 +110,4 @@ public class RestService {
 
 
     }
-
-    public void saveToken(String token) {
-        AndroidNetworking.post(address+"/saveToken/"+token)
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                    }
-                    @Override
-                    public void onError(ANError error) {
-                    }
-                });
-    }
 }

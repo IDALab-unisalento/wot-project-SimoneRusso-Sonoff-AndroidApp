@@ -14,8 +14,12 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
@@ -64,7 +68,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        RestService restService = new RestService(getApplicationContext());
-        restService.saveToken(token);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> tokenObj = new HashMap<>();
+        tokenObj.put("token", token);
+        db.collection("tokens")
+                .add(tokenObj)
+                .addOnSuccessListener(documentReference -> Log.d("Firestore add", "DocumentSnapshot written with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("Firestore add", "Error adding document", e));
     }
 }
