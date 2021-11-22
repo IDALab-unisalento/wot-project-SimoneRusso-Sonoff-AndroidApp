@@ -110,19 +110,19 @@
                     android:orientation="vertical"
                     android:paddingBottom="10dp">
 
+
                     <ToggleButton
                         android:id="@+id/toggleBtn"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
                         android:background="@drawable/custom_toggle"
                         android:paddingTop="25sp"
                         android:text="@string/lock"
-                        android:textOn=""
                         android:textOff=""
-                        android:layout_gravity="center"
-                        />
-
+                        android:textOn=""
+                        android:layout_marginBottom="10dp"/>
                     <TextView
                         android:id="@+id/tvAccess"
                         android:layout_width="wrap_content"
@@ -130,7 +130,10 @@
                         android:layout_gravity="center"
                         android:text=""
                         android:textSize="20sp"
-                        android:visibility="visible" />
+                        android:visibility="gone"
+                        android:layout_marginTop="-10dp"
+                        android:layout_marginBottom="30dp"/>
+
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

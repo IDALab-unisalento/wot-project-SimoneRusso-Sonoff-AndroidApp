@@ -7,7 +7,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -20,7 +19,7 @@ import it.unisalento.sonoff.R;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
-    String address = "http://192.168.1.100:8082";
+    String address = "http://172.20.10.4:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -43,6 +42,7 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
+                        Log.e("Rest (getStatus()):", anError.getErrorBody());
                     }
                 });
     }
@@ -54,15 +54,16 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
+                        textView.setVisibility(View.VISIBLE);
+
                         if(response.equals("ON")) {
                             textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.parseColor("417A00"));
+                            textView.setTextColor(Color.parseColor("#417A00"));
                         }
                         else{
                             textView.setText(R.string.access_deny);
                             textView.setTextColor(Color.RED);
                         }
-                        textView.setVisibility(View.VISIBLE);
                     }
 
                     @Override

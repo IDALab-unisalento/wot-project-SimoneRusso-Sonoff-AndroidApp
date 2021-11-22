@@ -22,7 +22,6 @@ import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.restService.RestService;
 
 @SuppressWarnings("FieldMayBeFinal")
-@SuppressLint("UseSwitchCompatOrMaterialCode")
 public class MainActivity extends AppCompatActivity{
 
     private ToggleButton toggleButton;
