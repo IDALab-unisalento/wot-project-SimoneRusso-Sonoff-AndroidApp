@@ -9,7 +9,7 @@ c.    Modifica dell’app Android che invierà i comandi di accensione e spegnim
 5.    Implementazione di un sistema di autenticazione in App.
 Ogni fase ha visto lo sviluppo di un nuovo componente o di una nuova feature.
 
-#Fase 1
+# Fase 1
 
 In questa fase si è sviluppata un’app Android che fosse in grado di comunicare direttamente con il Sonoff Mini attraverso il protocollo MQTT. Si noti che la prima fase non prevede la creazione del network secondario, ciò implica che, per permettere la comunicazione, l’app e il Sonoff Mini devono necessariamente essere collegati alla stessa rete, altrimenti non sarebbe possibile raggiungere il Sonoff.
 Al lancio, l’app deve effettuare una sottoscrizione al topic “stat/tasmota_8231A8/POWER1”, che rimane aperta per tutta la vita dell’applicazione, e una pubblicazione di un messaggio vuoto sul topic “cmnd/tasmota_8231A8/Power1”, in modo da ottenere lo stato del dispositivo e poter settare correttamente l’UI.
@@ -23,7 +23,7 @@ Quando un utente cambia lo stato del dispositivo, l’app deve pubblicare un mes
  ![Algorithm schema](./images/2.png)
 Figura 4.2: Diagramma di sequenza della fase 1 (cambio di stato)
 
-#Fase 2
+# Fase 2
 
 Questa fase si divide in tre punti: 
 »    Creazione di un network secondario che non sarà accessibile a nessuno e al quale sarà collegato solo il Sonoff Mini;
@@ -49,7 +49,7 @@ Mentre deve contattare le API changeStatusON() e chaneStatusOFF() quando un uten
  ![Algorithm schema](./images/5.png)
 Figura 4.5: Diagramma di sequenza della fase 2 (cambio di stato)
 
-#Fase 3
+# Fase 3
 
 Per la terza fase deve essere sviluppato il backend che accetta in ingresso chiamate REST e contatta il gateway, sempre tramite chiamate di tipo REST.
 Il backend è stato sviluppato usando Java con il framework Spring ed espone tre API:
@@ -69,7 +69,7 @@ Inoltre in questa fase l’app deve essere modificata, aggiungendo un pulsante c
  ![Algorithm schema](./images/8.png)
 Figura 4.8: Diagramma della fase 3 (richiesta di accesso)
  
-#Fase 4
+# Fase 4
 
 Nella quarta fase è stato implementato il sistema di push notification tramite i servizi Cloud Messaging e Cloud Firestore, offerti dalla piattaforma Firebase di Google.
 Al primo avvio dell’app, l'SDK FCM genera un token di registrazione per l'istanza dell'app client. Il token permette di identificare un device su cui è installata l’app e deve essere salvato per far si che sia possibile inviare notifiche a quella specifica istanza dell’app. 
@@ -83,7 +83,7 @@ L’app Android, alla ricezione della push notification, deve mostrare la notifi
   ![Algorithm schema](./images/10.png)
 Figura 4.10: Diagramma di sequenza della fase 4 (push notification)
 
-#Fase 5
+# Fase 5
 
 Nell’ultima fase, è stato implementato un sistema di autenticazione degli utenti attraverso il servizio di Authentication offerto dalla piattaforma Firebase di Google.
 All’avvio l’app mostra un’Activity di login. L’utente, dopo essersi autenticato, deve essere reindirizzato all’Activity che permette di inviare comandi al Sonoff e di richiedere l’accesso all’area protetta. 
