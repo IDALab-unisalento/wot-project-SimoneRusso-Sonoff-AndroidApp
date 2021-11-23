@@ -19,7 +19,7 @@ import it.unisalento.sonoff.R;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
-    String address = "http://172.20.10.4:8082";
+    String address = "http://192.168.1.100:8082";
     String clientId;
 
     public RestService(Context context) {
