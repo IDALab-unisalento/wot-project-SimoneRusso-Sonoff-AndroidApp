@@ -1,95 +1,92 @@
-Il progetto si divide in 5 fasi:
-1.    Progettazione e sviluppo di un’app Android che, collegata allo stesso Wi-Fi del Sonoff, permette di cambiare lo stato del dispositivo (ON e OFF) e visualizzare lo stato;
-2.    Attivazione delle due reti e creazione del gateway:
-a.    Creazione di un gateway che accetta in ingresso comandi tramite REST API
-b.    Distinzione tra le due reti;
-c.    Modifica dell’app Android che invierà i comandi di accensione e spegnimento al gateway invece che al Sonoff Mini;
-3.    Design e sviluppo del backend che accetta in input comandi tramite REST API e inoltra le richieste al gateway e modifica dell’app Android per includere un pulsante per richiedere l’accesso ad un’area protetta;
-4.    Implementazione delle push notification quando lo stato del dispositivo cambia.
-5.    Implementazione di un sistema di autenticazione in App.
-Ogni fase ha visto lo sviluppo di un nuovo componente o di una nuova feature.
+This project has been divided in five parts:
+1.    Design and development of an Android native app;
+2.    Activation of two networks and development of a gateway
+a.    The gateway must accept REST API calls;
+b.    Creation of two networks through Raspberry Pi;
+1.    Modification of the Android app that will send the on and off commands to the gateway instead of the Sonoff Mini;
+3.    Design and development of a backend that accepts commands through REST API, forwards them to the gateway and edits the Android app in order to include a button to ask for permission to access to a protected area;
+4.    Implementation of push notification when the state of the Sonoff Mini changes;
+5.    Implementation of an Authentication system in app.
+Each branch contains one of the five parts, in branch named fase-1 there is the first point of the bulleted list, in fase-2 there is the second point and so on.
+In this repository there is the Android native app.
+The gateway can be found at www.cercalink.com and the backend at www.cercalink.it.
 
 # Fase 1
 
-In questa fase si è sviluppata un’app Android che fosse in grado di comunicare direttamente con il Sonoff Mini attraverso il protocollo MQTT. Si noti che la prima fase non prevede la creazione del network secondario, ciò implica che, per permettere la comunicazione, l’app e il Sonoff Mini devono necessariamente essere collegati alla stessa rete, altrimenti non sarebbe possibile raggiungere il Sonoff.
-Al lancio, l’app deve effettuare una sottoscrizione al topic “stat/tasmota_8231A8/POWER1”, che rimane aperta per tutta la vita dell’applicazione, e una pubblicazione di un messaggio vuoto sul topic “cmnd/tasmota_8231A8/Power1”, in modo da ottenere lo stato del dispositivo e poter settare correttamente l’UI.
-Sul primo topic il Sonoff Mini pubblica un messaggio contenente lo stato del dispositivo quando quest’ultimo viene fatto cambiare oppure in risposta ad una pubblicazione sul secondo topic.
+At this stage, an Android app that is able to communicate directly with the Sonoff Mini through the MQTT protocol app has been developed. It should be noted that the first phase does not involve the creation of a secondary network, it implies that, in order to allow communication, the app and the Sonoff Mini must necessarily be connected to the same network, otherwise it would not be possible to reach the Sonoff.
+At launch, the app subscribes itself to the topic "stat/tasmota_8231A8/POWER1", which remains open for the entire life of the application, and publishes an empty message on the topic "cmnd/tasmota_8231A8/Power1", in order to obtain the status of the device and to be able to set the UI correctly.
+The Sonoff Mini publishes a message containing the status of the device on the first topic when the latter changed or in response to a publication on the second topic.
 
 ![Algorithm schema](./images/1.png)
-Figura 1: Diagramma di sequenza della fase 1 (connessione al broker)
+Figure 1: Phase 1 sequence diagram (connection to the broker)
 
-Quando un utente cambia lo stato del dispositivo, l’app deve pubblicare un messaggio contenente lo stato (ON o OFF) su cui si vuole portare il Sonoff Mini sul topic “cmnd/tasmota_8231A8/POWER1”
+When a user changes the status of the device, the app publishes a message containing the status on which the user want to bring the Sonoff Mini (ON or OFF)  on the topic "cmnd/tasmota_8231A8/POWER1"
 
- ![Algorithm schema](./images/2.png)
-Figura 2: Diagramma di sequenza della fase 1 (cambio di stato)
+![Algorithm schema](./images/2.png)
+Figure 2: Phase 1 sequence diagram (state change)
 
 # Fase 2
 
-Questa fase si divide in tre punti: 
-»    Creazione di un network secondario che non sarà accessibile a nessuno e al quale sarà collegato solo il Sonoff Mini;
-»    Creazione di un gateway che accetta in ingresso chiamate REST e le traduce in comandi per il Sonoff;
-»    Modifica dell’app che, con l’introduzione del gateway, non comunicherà più direttamente con il Sonoff, ma con il gateway.
-La realizzazione del network secondario deve avvenire tramite il Raspberry Pi, il quale, connesso ad una rete LAN, deve essere configurato come wirless access point
- 
- ![Algorithm schema](./images/3.png)
-Figura 3: Distinzione delle due reti attraverso il Raspberry Pi
+This phase has been divided into three points: 
+» Creation of a secondary network that will not be accessible to anyone and to which just the Sonoff Mini can be connected;
+» Creation of a gateway that accepts incoming REST calls and translates them into commands for the Sonoff;
+» Changing the app that, with the introduction of the gateway, will no longer communicate directly with the Sonoff, but with the gateway.
+The realization of the secondary network takes place through the Raspberry Pi, which, connected to a LAN network, has been configured as a wireless access point.
 
-Il gateway, sviluppato in Java con il framework Spring, espone tre API:
-»    getStatus(), questa API apre la connessione con il broker, si sottoscrive al topic “stat/tasmota_8231A8/POWER1”, pubblica un messaggio vuoto sul topic “cmnd/tasmota_8231A8/Power1” e chiude la connessione dopo aver intercettato il messaggio. Infine, restituisce lo stato del Sonoff;
-»    changestatusON(), questa API cambia lo stato del Sonoff in ON, apre la connessione, effettua una pubblicazione sul topic “cmnd/tasmota_8231A8/POWER1” con il messaggio “ON”, chiude la connessione e restituisce una ResponseEntity;
-»    changeStatusOFF(), questa API cambia lo stato del Sonoff in OFF, apre la connessione, effettua una pubblicazione sul topic “cmnd/tasmota_8231A8/POWER1” con il messaggio “OFF”, chiude la connessione e restituisce una ResponseEntity.
-Tutte le API devono prendere come paramentro l’id del client, in modo da poter gestire le connessioni dei vari client al broker MQTT.
-L’app deve essere modificata per poter effettuare chiamate REST. In particolare, al lancio deve effettuare una chiamata all’endpoint della API getStatus(), in modo da ottenere lo stato del dispositivo e poter settare correttamente l’UI. 
- 
- ![Algorithm schema](./images/4.png)
-Figura 4: Diagramma di sequenza della fase 2 (connessione al broker)
+![Algorithm schema](./images/3.png)
+Figure 3: Distinguishing the two networks through the Raspberry Pi
 
-Mentre deve contattare le API changeStatusON() e chaneStatusOFF() quando un utente vuole cambiare lo stato del Sonoff.
+The gateway, developed in Java with the Spring framework, exposes three APIs:
+» getStatus(), this API opens the connection with the broker, subscribes to the topic "stat/tasmota_8231A8/POWER1", publishes an empty message on the topic "cmnd/tasmota_8231A8/Power1" and closes the connection after intercepting the message. Finally, it returns the status of the Sonoff;
+» changestatusON(), this API opens the connection, makes a publication on the topic "cmnd/tasmota_8231A8/POWER1" with the message "ON", thus changing the status of the device to ON, closes the connection and returns a ResponseEntity;
+» changeStatusOFF(), this API opens the connection, makes a publication on the topic "cmnd/tasmota_8231A8/POWER1" with the message "OFF", thus changing the status of the device to ON, closes the connection and returns a ResponseEntity.
+All APIs take the client id as a parameter, so that it can manage the connections of the various clients to the MQTT broker.
+The app has been modified to be able to make REST calls. In particular, at launch it must make (makes) a call to the endpoint of the api getStatus(), in order to obtain the status of the device and to be able to set the UI correctly. 
+
+![Algorithm schema](./images/4.png)
+Figure 4: Phase 2 sequence diagram (connecting to the broker)
+
+While it has to contact the API changeStatusON() and changeStatusOFF() when a user wants to change the state of the Sonoff.
  
  ![Algorithm schema](./images/5.png)
 Figura 5: Diagramma di sequenza della fase 2 (cambio di stato)
 
 # Fase 3
 
-Per la terza fase deve essere sviluppato il backend che accetta in ingresso chiamate REST e contatta il gateway, sempre tramite chiamate di tipo REST.
-Il backend è stato sviluppato usando Java con il framework Spring ed espone tre API:
-»    getStatus(), questa API contatta l’API getStatus() esposta dal gateway e infine restituisce lo stato del Sonoff;
- 
- ![Algorithm schema](./images/6.png)
-Figura 6: Diagramma di sequenza della fase 3 (connessione al broker)
+For the third phase, the backend, which accepts incoming REST calls and contacts the gateway always through REST calls, has been developed.
+The backend has been developed using Java with the Spring framework and exposes three APIs:
+» getStatus(), this API contacts the getStatus() API exposed by the gateway and finally returns the status of the Sonoff; 
 
-»    changestatusON(), questa API contatta l’API changestatusON() esposta dal gateway e restituisce una ResponseEntity;
-»    changestatusOFF(), questa API contatta l’API changestatusOFF() esposta dal gateway e restituisce una ResponseEntity.
+ ![Algorithm schema](./images/6.png)
+Figure 6: Step 3 sequence diagram (connecting to the broker)
+
+» changestatusON(), this API contacts the changestatusON() API exposed by the gateway and returns a ResponseEntity;
+» changestatusOFF(), this API contacts the changestatusOFF() API exposed by the gateway and returns a ResponseEntity.
  
 ![Algorithm schema](./images/7.png)
-Figura 7: Diagramma di sequenza della fase 3 (cambio di stato)
+Figure 7: Phase 3 sequence diagram (state change)
 
-Inoltre in questa fase l’app deve essere modificata, aggiungendo un pulsante che consenta all’utente di richiedere l’accesso all’area protetta dal Sonoff. Qunado l’utente richiede l’accesso, l’app contatta il backend tramite una chiamata REST, il backend, sempre tramite REST API, contatta il gateway.
- 
- ![Algorithm schema](./images/8.png)
-Figura 8: Diagramma della fase 3 (richiesta di accesso)
+Moreover, at this stage the app has been modified, adding a button that allows the user to request access to the area protected by the Sonoff. When the user requests access, the app contacts the backend via a REST call, the backend, again via REST API, contacts the gateway. 
+
+![Algorithm schema](./images/8.png)
+Figure 8: Phase 3 diagram (access request)
  
 # Fase 4
 
-Nella quarta fase è stato implementato il sistema di push notification tramite i servizi Cloud Messaging e Cloud Firestore, offerti dalla piattaforma Firebase di Google.
-Al primo avvio dell’app, l'SDK FCM genera un token di registrazione per l'istanza dell'app client. Il token permette di identificare un device su cui è installata l’app e deve essere salvato per far si che sia possibile inviare notifiche a quella specifica istanza dell’app. 
- 
+In the fourth phase, the push notification system has been implemented through the Cloud Messaging and Cloud Firestore services, offered by Google's Firebase platform.
+When the app is launched for the first time, the FCM SDK generates a registration token for the client app instance. The token allows the platform to identify a device on which the app is installed and must be saved to ensure that it is possible to send notifications to that specific instance of the app. 
  ![Algorithm schema](./images/9.png)
-Figura 9: Diagramma di sequenza della fase 4 (primo avvio dell'app)
+Figure 9: Phase 4 sequence diagram (first launch of the app)
 
-Il gateway, al lancio, si connette al broker e si sottoscrive al topic “stat/tasmota_8231A8/POWER1” per intercettare i cambiamenti di stato del Sonoff. Quando un messaggio arriva su questo topic, il gateway deve effettuare una query verso il database Cloud Firestore in modo da ottenere i tokens che identificano i dispositivi che hanno installato l’app, costruire il corpo della notifica, il quale contiene lo stato del Sonoff, e inviarla in Multicast ai dispositivi registrati attraverso i tokens. 
-L’app Android, alla ricezione della push notification, deve mostrare la notifica all’utente e apportare le dovute modifiche all’UI per mostrare correttamente lo stato attuale del Sonoff Mini. 
- 
+The gateway, at launch, connects to the broker and subscribes to the topic "stat/tasmota_8231A8/POWER1" to intercept changes in Sonoff status. When a message arrives on this topic, the gateway queries the Cloud Firestore database (in order to obtain the tokens that identify the devices on which the app has been installed), builds the notification body, which contains the status of the Sonoff, and sends it in Multicast to the devices registered through the tokens. 
+The Android app, upon receipt of the push notification, shows the notification to the user and makes the necessary changes to the UI to correctly show the current status of the Sonoff Mini. 
   ![Algorithm schema](./images/10.png)
-Figura 10: Diagramma di sequenza della fase 4 (push notification)
+Figure 10: Step 4 sequence diagram (push notification)
 
 # Fase 5
 
-Nell’ultima fase, è stato implementato un sistema di autenticazione degli utenti attraverso il servizio di Authentication offerto dalla piattaforma Firebase di Google.
-All’avvio l’app mostra un’Activity di login. L’utente, dopo essersi autenticato, deve essere reindirizzato all’Activity che permette di inviare comandi al Sonoff e di richiedere l’accesso all’area protetta. 
-Non è prevista un Activity che consenta agli utenti di registrarsi autonomamente, piuttosto è stata implementata una dashboard, riservata agli utenti definiti come amministratori, che consente a questi di aggiungere nuovi utenti inserendo la loro email, assegnandoli una password e il ruolo che ricoprono.
- 
+In the last phase, a user authentication system has been implemented through the Authentication service offered by Google's Firebase platform.
+At startup, the app shows the login Activity. After authentication, the user is redirected to the Activity that allows them to send commands to the Sonoff and to request access to the protected area. 
+There is no Activity that allows users to register independently, rather a dashboard has been implemented, reserved for users defined as administrators, which allows them to add new users by entering their email, assigning them a password and the role they play. 
   ![Algorithm schema](./images/11.png)
-Figura 11: Diagramma si sequenza della fase 5 (login e creazione nuovi account)
- 
-
+Figure 11: Diagram of the sequence of phase 5 (login and creation of new accounts)
