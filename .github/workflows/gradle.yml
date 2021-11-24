@@ -5,9 +5,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ fase-5, fase-4, fase-3, fase-2, fase-1 ]
+    branches: [ fase-5 ]
   pull_request:
-    branches: [ fase-5, fase-4, fase-3, fase-2, fase-1 ]
+    branches: [ fase-5 ]
 
 jobs:
   build:
