@@ -9,7 +9,8 @@ b.    Creation of two networks through Raspberry Pi;
 5.    Implementation of an Authentication system in app.
 Each branch contains one of the five parts, in branch named fase-1 there is the first point of the bulleted list, in fase-2 there is the second point and so on.
 In this repository there is the Android native app.
-The gateway can be found at www.cercalink.com and the backend at www.cercalink.it.
+The gateway can be found at https://github.com/IDALab-unisalento/wot-project-SimoneRusso-part1-Sonoff-gateway . 
+The backend at https://github.com/IDALab-unisalento/wot-project-SimoneRusso-part2-Sonoff-Backend .
 
 # Fase 1
 
