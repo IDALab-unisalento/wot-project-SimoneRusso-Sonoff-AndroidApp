@@ -1,7 +1,9 @@
 package it.unisalento.sonoff.restService;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.provider.Settings;
 import android.util.Log;
@@ -13,9 +15,20 @@ import android.widget.ToggleButton;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Console;
 
 import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.model.AccessToken;
+import it.unisalento.sonoff.model.Credential;
+import it.unisalento.sonoff.view.LoginActivity;
+import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
@@ -26,7 +39,6 @@ public class RestService {
         AndroidNetworking.initialize(context);
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
-
 
     public void getStatus(ToggleButton toggleButton){
         AndroidNetworking.get(address+"/getStatus/"+clientId)
@@ -114,6 +126,32 @@ public class RestService {
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
                         toggleButton.setChecked(true);
+                    }
+                });
+    }
+
+    public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
+        Credential credential = new Credential(username, password);
+
+        AndroidNetworking.post(address+"/getAccessToken")
+                .setPriority(Priority.LOW)
+                .addApplicationJsonBody(credential)
+                .build()
+                .getAsString(new StringRequestListener() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        progress.dismiss();
+                        AccessToken accessToken = new AccessToken(response);
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        intent.putExtra("accessToken", accessToken);
+                        activity.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        progress.dismiss();
+
                     }
                 });
     }

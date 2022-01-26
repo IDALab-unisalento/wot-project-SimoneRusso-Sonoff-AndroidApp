@@ -14,9 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".view.DashboardActivity"
-            android:exported="true" />
+        <activity android:name=".view.DashboardActivity"/>
         <activity
             android:name=".view.LoginActivity"
             android:exported="true"
@@ -27,17 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.MainActivity"
-            android:exported="true"></activity>
-
-        <service
-            android:name=".helper.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <activity android:name=".view.MainActivity"/>
     </application>
 
 </manifest>

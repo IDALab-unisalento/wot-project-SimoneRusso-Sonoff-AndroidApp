@@ -15,8 +15,6 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import it.unisalento.sonoff.listener.MainListener;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.restService.RestService;
@@ -32,8 +30,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
+        if(false) {
             setContentView(R.layout.activity_main);
 
             toggleButton = findViewById(R.id.toggleBtn);

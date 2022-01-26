@@ -9,8 +9,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.listener.DashboardListener;
 
@@ -24,8 +22,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
+        if(false) {
             tvErDash = findViewById(R.id.tvErDash);
             etNewEmail = findViewById(R.id.etNewEmail);
             etNewPwd = findViewById(R.id.etNewPwd);

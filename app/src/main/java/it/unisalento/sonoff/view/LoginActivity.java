@@ -11,7 +11,7 @@ import it.unisalento.sonoff.listener.LoginListener;
 import it.unisalento.sonoff.R;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText etEmail;
+    private EditText etUsername;
     private EditText etPwd;
     private TextView tvErLog;
 
@@ -19,7 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        etEmail = findViewById(R.id.etEmail);
+        etUsername = findViewById(R.id.etUsername);
         etPwd = findViewById(R.id.etPwd);
         tvErLog = findViewById(R.id.tvErLog);
         Button btnLogin = findViewById(R.id.btnLogin);
@@ -27,8 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(listener);
     }
 
-    public EditText getEtEmail() {
-        return etEmail;
+    public EditText getEtUsername() {
+        return etUsername;
     }
 
     public EditText getEtPwd() {
