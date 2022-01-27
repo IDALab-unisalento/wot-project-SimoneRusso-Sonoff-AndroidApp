@@ -15,14 +15,7 @@ import android.widget.ToggleButton;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
-import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Console;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.AccessToken;
@@ -72,7 +65,7 @@ public class RestService {
                             textView.setText(R.string.access_ok);
                             textView.setTextColor(Color.parseColor("#417A00"));
                         }
-                        else{
+                        else if(response.equals("OFF")){
                             textView.setText(R.string.access_deny);
                             textView.setTextColor(Color.RED);
                         }
@@ -143,6 +136,7 @@ public class RestService {
                     public void onResponse(String response) {
                         progress.dismiss();
                         AccessToken accessToken = new AccessToken(response);
+
                         Intent intent = new Intent(activity, MainActivity.class);
                         intent.putExtra("accessToken", accessToken);
                         activity.startActivity(intent);
