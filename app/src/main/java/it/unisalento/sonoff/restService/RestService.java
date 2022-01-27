@@ -15,7 +15,12 @@ import android.widget.ToggleButton;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.AccessToken;
@@ -126,7 +131,47 @@ public class RestService {
     public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
         Credential credential = new Credential(username, password);
 
-        AndroidNetworking.post(address+"/getAccessToken")
+        AndroidNetworking
+                .post("http://192.168.1.100:8180/auth/realms/MyRealm/protocol/openid-connect/token")
+                .addUrlEncodeFormBodyParameter("username", username)
+                .addUrlEncodeFormBodyParameter("password", password)
+                .addUrlEncodeFormBodyParameter("client_id", "backend")
+                .addUrlEncodeFormBodyParameter("grant_type", "password")
+                .addUrlEncodeFormBodyParameter("client_secret", "eLFYzBFFDlJrA9dTmNPnkTwhiipyB8x8")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("token", response.getString("access_token"));
+                            AndroidNetworking
+                                    .get("http://192.168.1.100:8180/auth/realms/MyRealm/protocol/openid-connect/userinfo")
+                                    .addHeaders("Content-Type", "application/json")
+                                    .addHeaders("Authorization", "Bearer "+response.getString("access_token"))
+                                    .build()
+                                    .getAsJSONObject(new JSONObjectRequestListener() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+                                            Log.d("tag", response.toString());
+                                        }
+
+                                        @Override
+                                        public void onError(ANError anError) {
+
+                                        }
+                                    });
+                        } catch (JSONException e) {
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("TAG", "onError: ");
+
+                    }
+                });
+
+        /*AndroidNetworking.post(address+"/getAccessToken")
                 .setPriority(Priority.LOW)
                 .addApplicationJsonBody(credential)
                 .build()
@@ -147,6 +192,6 @@ public class RestService {
                         progress.dismiss();
 
                     }
-                });
+                });*/
     }
 }
