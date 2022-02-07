@@ -38,7 +38,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:transitionName="tvLogin"
-        />
+        android:visibility="gone"/>
 
 
     <ImageView

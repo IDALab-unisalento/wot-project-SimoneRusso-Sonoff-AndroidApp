@@ -24,9 +24,9 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         if(compoundButton.isPressed()){
             if(compoundButton.isChecked())
-                restService.changeStatusON(compoundButton, mainActivity.getTvAccess());
+                restService.changeStatusON(compoundButton, mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
             else if (!compoundButton.isChecked())
-                restService.changeStatusOFF(compoundButton, mainActivity.getTvAccess());
+                restService.changeStatusOFF(compoundButton, mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
         }
     }
 
@@ -34,10 +34,11 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
     public void onClick(View view) {
         if(view.getId() == R.id.btnAccess) {
 
-            restService.getStatus(mainActivity.getTvAccess());
+            restService.getStatus(mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
         }
         if(view.getId() == R.id.tvDashboard){
             Intent intent = new Intent(mainActivity, DashboardActivity.class);
+            intent.putExtra("user", mainActivity.getUser());
             mainActivity.startActivity(intent);
         }
     }

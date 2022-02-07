@@ -15,17 +15,22 @@ import android.widget.ToggleButton;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.unisalento.sonoff.R;
-import it.unisalento.sonoff.model.AccessToken;
 import it.unisalento.sonoff.model.Credential;
+import it.unisalento.sonoff.model.User;
 import it.unisalento.sonoff.view.LoginActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
-    String address = "http://192.168.1.100:8082";
+    //String address = "http://192.168.1.100:8082";
+    String address = "http://10.20.72.9:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -33,8 +38,8 @@ public class RestService {
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public void getStatus(ToggleButton toggleButton){
-        AndroidNetworking.get(address+"/getStatus/"+clientId)
+    public void getStatus(ToggleButton toggleButton, MainActivity activity, User user){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -48,11 +53,16 @@ public class RestService {
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
                         Log.e("Rest (getStatus()):", anError.getErrorBody());
+                        if(anError.getErrorCode()==401){
+                            Intent intent = new Intent(activity, LoginActivity.class);
+                            activity.finish();
+                            activity.startActivity(intent);
+                        }
                     }
                 });
     }
-    public void getStatus(TextView textView){
-        AndroidNetworking.get(address+"/getStatus/"+clientId)
+    public void getStatus(TextView textView, MainActivity activity, User user){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -74,17 +84,24 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
-                        textView.setText(R.string.access_ok);
-                        textView.setTextColor(Color.parseColor("#417A00"));
-                        textView.setVisibility(View.VISIBLE);
+                        if(anError.getErrorCode()==401){
+                            Intent intent = new Intent(activity, LoginActivity.class);
+                            activity.finish();
+                            activity.startActivity(intent);
+                        }
+                        else {
+                            textView.setText(R.string.access_ok);
+                            textView.setTextColor(Color.parseColor("#417A00"));
+                            textView.setVisibility(View.VISIBLE);
+                        }
 
                     }
                 });
     }
 
 
-    public void changeStatusON(CompoundButton toggleButton, TextView textView) {
-        AndroidNetworking.get(address+"/changeStatusON/"+clientId)
+    public void changeStatusON(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
+        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -98,13 +115,19 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
-                        toggleButton.setChecked(false);
+                        if(anError.getErrorCode()==401){
+                            Intent intent = new Intent(activity, LoginActivity.class);
+                            activity.finish();
+                            activity.startActivity(intent);
+                        }
+                        else
+                            toggleButton.setChecked(false);
                     }
                 });
     }
 
-    public void changeStatusOFF(CompoundButton toggleButton, TextView textView) {
-        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId)
+    public void changeStatusOFF(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
+        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -118,34 +141,65 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
-                        toggleButton.setChecked(true);
+                        if(anError.getErrorCode()==401){
+                            Intent intent = new Intent(activity, LoginActivity.class);
+                            activity.finish();
+                            activity.startActivity(intent);
+                        }
+                        else
+                            toggleButton.setChecked(true);
                     }
                 });
     }
 
+    //TODO:vedere se funziona
     public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
         Credential credential = new Credential(username, password);
 
-        AndroidNetworking.post(address+"/getAccessToken")
+        AndroidNetworking.post(address+"/auth")
                 .setPriority(Priority.LOW)
                 .addApplicationJsonBody(credential)
                 .build()
-                .getAsString(new StringRequestListener() {
-
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
+                        User user = new User();
+                        try {
+                            user.setUsername((String) response.get("username"));
+                            user.setRole((String) response.get("role"));
+                            user.setRole((String) response.get("token"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         progress.dismiss();
-                        AccessToken accessToken = new AccessToken(response);
-
                         Intent intent = new Intent(activity, MainActivity.class);
-                        intent.putExtra("accessToken", accessToken);
+                        intent.putExtra("user", user);
                         activity.startActivity(intent);
+                        activity.finish();
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        progress.dismiss();
+                        Log.d("error", anError.getMessage());
+                    }
+                });
+    }
 
+    public void createUser(String username, String password, String role, User user, ProgressDialog progress, TextView tvErDash) {
+        AndroidNetworking.post(address+"/createUser/"+username+"/"+password+"/"+role)
+                .setPriority(Priority.LOW)
+                .addApplicationJsonBody(user)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        progress.dismiss();
+                        tvErDash.setText("Operazione completata");
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        tvErDash.setText("Si è verificat un errore");
                     }
                 });
     }

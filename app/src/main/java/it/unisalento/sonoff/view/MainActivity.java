@@ -1,22 +1,17 @@
 package it.unisalento.sonoff.view;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import it.unisalento.sonoff.listener.MainListener;
 import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.model.User;
 import it.unisalento.sonoff.restService.RestService;
 
 @SuppressWarnings("FieldMayBeFinal")
@@ -25,14 +20,16 @@ public class MainActivity extends AppCompatActivity{
     private ToggleButton toggleButton;
     private TextView tvAccess;
     private static final String REQUEST_ACCEPT = "Notification";
+    private User user;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(false) {
+        user = (User) getIntent().getSerializableExtra("user");
+        if(user != null) {
             setContentView(R.layout.activity_main);
-
+            
             toggleButton = findViewById(R.id.toggleBtn);
             tvAccess = findViewById(R.id.tvAccess);
             TextView tvDashboard = findViewById(R.id.tvDashboard);
@@ -40,16 +37,15 @@ public class MainActivity extends AppCompatActivity{
 
             MainListener listener = new MainListener(this);
 
-            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
+            //LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
 
             RestService restService = new RestService(getApplicationContext());
-            restService.getStatus(this.toggleButton);
+            restService.getStatus(this.toggleButton, this, user);
 
             toggleButton.setOnCheckedChangeListener(listener);
             button.setOnClickListener(listener);
 
-            String role = getIntent().getStringExtra("role");
-            if(role.equals("admin")){
+            if(user.getRole().equals("admin")){
                 tvDashboard.setVisibility(View.VISIBLE);
                 tvDashboard.setClickable(true);
                 tvDashboard.setOnClickListener(listener);
@@ -62,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    /*private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String status = intent.getStringExtra("status");
@@ -70,9 +66,13 @@ public class MainActivity extends AppCompatActivity{
             toggleButton.setChecked(status.equals("ON"));
         }
 
-    };
+    };*/
 
     public TextView getTvAccess() {
         return tvAccess;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

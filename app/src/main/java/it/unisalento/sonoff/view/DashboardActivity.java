@@ -11,18 +11,22 @@ import android.widget.TextView;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.listener.DashboardListener;
+import it.unisalento.sonoff.model.User;
 
 public class DashboardActivity extends AppCompatActivity {
     private TextView tvErDash;
     private EditText etNewEmail;
     private EditText etNewPwd;
     private EditText etRole;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        if(false) {
+        user = getIntent().getParcelableExtra("user");
+
+        if(user != null) {
             tvErDash = findViewById(R.id.tvErDash);
             etNewEmail = findViewById(R.id.etNewEmail);
             etNewPwd = findViewById(R.id.etNewPwd);
@@ -57,5 +61,9 @@ public class DashboardActivity extends AppCompatActivity {
 
     public EditText getEtRole() {
         return etRole;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

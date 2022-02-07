@@ -2,13 +2,18 @@ package it.unisalento.sonoff.listener;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import java.util.HashMap;
 import java.util.Map;
 import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.model.User;
+import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.DashboardActivity;
 
 @SuppressWarnings("ConstantConditions")
@@ -30,7 +35,9 @@ public class DashboardListener implements View.OnClickListener {
                     progress.setMessage("Operazione in corso...");
                     progress.setCancelable(false);
                     progress.show();
-                    createUser(progress);
+                    createUser(progress, activity.getEtNewEmail().getText().toString(),
+                            activity.getEtNewPwd().getText().toString(), activity.getEtRole().getText().toString(),
+                            activity.getUser(), activity.getTvErDash());
                 } else {
                     if (activity.getEtNewEmail().getText().toString().length() == 0)
                         activity.getEtNewEmail().setError("Non può essere vuoto!");
@@ -46,7 +53,10 @@ public class DashboardListener implements View.OnClickListener {
             }
     }
 
-    private void createUser(ProgressDialog progress) {
+    private void createUser(ProgressDialog progress, String username, String password, String role, User user, TextView tvErDash) {
+        RestService restService = new RestService(activity);
+        restService.createUser(username, password, role, user, progress, tvErDash);
+
 
     }
 
