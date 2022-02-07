@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity{
         user = (User) getIntent().getSerializableExtra("user");
         if(user != null) {
             setContentView(R.layout.activity_main);
-            
+
             toggleButton = findViewById(R.id.toggleBtn);
             tvAccess = findViewById(R.id.tvAccess);
             TextView tvDashboard = findViewById(R.id.tvDashboard);

@@ -167,7 +167,7 @@ public class RestService {
                         try {
                             user.setUsername((String) response.get("username"));
                             user.setRole((String) response.get("role"));
-                            user.setRole((String) response.get("token"));
+                            user.setToken((String) response.get("token"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
