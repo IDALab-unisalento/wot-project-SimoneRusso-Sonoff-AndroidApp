@@ -9,6 +9,7 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import it.unisalento.sonoff.helper.MqttHelper;
 import it.unisalento.sonoff.listener.MainListener;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.User;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity{
         user = (User) getIntent().getSerializableExtra("user");
         if(user != null) {
             setContentView(R.layout.activity_main);
+            Intent intent = new Intent(getApplicationContext(), MqttHelper.class);
+            startService(intent);
 
             toggleButton = findViewById(R.id.toggleBtn);
             tvAccess = findViewById(R.id.tvAccess);
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+
+
     /*private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -75,4 +80,5 @@ public class MainActivity extends AppCompatActivity{
     public User getUser() {
         return user;
     }
+
 }
