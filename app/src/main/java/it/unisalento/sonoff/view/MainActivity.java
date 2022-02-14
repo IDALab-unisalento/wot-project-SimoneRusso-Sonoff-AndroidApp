@@ -1,13 +1,18 @@
 package it.unisalento.sonoff.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import it.unisalento.sonoff.listener.MainListener;
 import it.unisalento.sonoff.R;
@@ -41,7 +46,7 @@ public class MainActivity extends AppCompatActivity{
 
             MainListener listener = new MainListener(this);
 
-            //LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(REQUEST_ACCEPT));
 
             RestService restService = new RestService(getApplicationContext());
             restService.getStatus(this.toggleButton, this, user);
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    /*private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String status = intent.getStringExtra("status");
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity{
             toggleButton.setChecked(status.equals("ON"));
         }
 
-    };*/
+    };
 
     public TextView getTvAccess() {
         return tvAccess;

@@ -25,6 +25,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -49,6 +50,7 @@ public class MqttService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private Handler mHandler;
     private List<Integer> idsNot = new ArrayList();
+    private static final String REQUEST_ACCEPT = "Notification";
 
     private class ToastRunnable implements Runnable {//to toast to your main activity for some time
         String mText;
@@ -205,6 +207,10 @@ public class MqttService extends Service {
                     Log.i(TAG, "Message arrived from topic " + topic);
                     Log.i(TAG, msg.toString());
                     showNotification("Cambio di stato", msg.toString());
+                    LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
+                    Intent intent = new Intent(REQUEST_ACCEPT);
+                    intent.putExtra("status", msg.toString());
+                    broadcaster.sendBroadcast(intent);
                 }
 
                 @Override
