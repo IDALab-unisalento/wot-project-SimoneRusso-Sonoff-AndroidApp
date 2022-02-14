@@ -29,9 +29,8 @@ import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
-    String address = "http://192.168.1.100:8082";
-    //String address = "http://10.20.72.9:8082";
-    //String address = "http://172.20.10.4:8082";
+    //String address = "http://192.168.1.100:8082";
+    String address = "http://10.20.72.9:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -153,6 +152,7 @@ public class RestService {
                 });
     }
 
+    //TODO:vedere se funziona
     public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
         Credential credential = new Credential(username, password);
 
