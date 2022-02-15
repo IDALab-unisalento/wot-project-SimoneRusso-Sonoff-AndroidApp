@@ -29,7 +29,10 @@ import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
+    //TODO: indirizzi ip
+    //CASA
     //String address = "http://192.168.1.100:8082";
+    //STUDIUM
     String address = "http://10.20.72.9:8082";
     String clientId;
 

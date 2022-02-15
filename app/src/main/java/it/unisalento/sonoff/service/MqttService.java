@@ -46,10 +46,15 @@ import it.unisalento.sonoff.view.MainActivity;
 
 
 public class MqttService extends Service {
+    //TODO: indirizzi ip
+    //STUDIUM
+    //private String ip = "10.20.72.9", port = "1883";
+    //CASA
+    private String ip = "192.168.1.100", port = "1883";
+
     private static final String POWER1 = "stat/tasmota_8231A8/POWER1";
     private static final String POWER2 = "stat/tasmota_8231A8/POWER2";
     private static final String POWER3 = "stat/tasmota_8231A8/POWER3";
-    private String ip = "10.20.72.9", port = "1883";
     private final IBinder mBinder = new LocalBinder();
     private Handler mHandler;
     private List<Integer> idsNot = new ArrayList();
