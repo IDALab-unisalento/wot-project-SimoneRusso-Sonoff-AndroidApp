@@ -38,7 +38,7 @@ public class RestService {
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public void getStatus(ToggleButton toggleButton, MainActivity activity, User user){
+    public void getStatus(ToggleButton toggleButton, User user){
         AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
@@ -54,14 +54,12 @@ public class RestService {
                         Log.e("Rest (getStatus()):", anError.toString());
                         Log.e("Rest (getStatus()):", anError.getErrorBody());
                         if(anError.getErrorCode()==401){
-                            Intent intent = new Intent(activity, LoginActivity.class);
-                            activity.finish();
-                            activity.startActivity(intent);
+
                         }
                     }
                 });
     }
-    public void getStatus(TextView textView, MainActivity activity, User user){
+    public void getStatus(TextView textView, User user){
         AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
@@ -85,9 +83,6 @@ public class RestService {
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
                         if(anError.getErrorCode()==401){
-                            Intent intent = new Intent(activity, LoginActivity.class);
-                            activity.finish();
-                            activity.startActivity(intent);
                         }
                         else {
                             textView.setText(R.string.access_ok);
@@ -100,7 +95,7 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
+    public void changeStatusON(CompoundButton toggleButton, User user) {
         AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
@@ -109,16 +104,13 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Rest (changeStatus()):", "status changed" + response);
-                        textView.setText("");
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
                         if(anError.getErrorCode()==401){
-                            Intent intent = new Intent(activity, LoginActivity.class);
-                            activity.finish();
-                            activity.startActivity(intent);
+
                         }
                         else
                             toggleButton.setChecked(false);
@@ -126,7 +118,7 @@ public class RestService {
                 });
     }
 
-    public void changeStatusOFF(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
+    public void changeStatusOFF(CompoundButton toggleButton, User user) {
         AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken())
                 .setPriority(Priority.LOW)
                 .build()
@@ -135,16 +127,13 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Rest (changeStatus()):", "status changed " + response);
-                        textView.setText("");
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (changeStatus()):", anError.toString());
                         if(anError.getErrorCode()==401){
-                            Intent intent = new Intent(activity, LoginActivity.class);
-                            activity.finish();
-                            activity.startActivity(intent);
+
                         }
                         else
                             toggleButton.setChecked(true);

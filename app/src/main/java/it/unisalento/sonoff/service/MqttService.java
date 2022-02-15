@@ -46,11 +46,16 @@ import it.unisalento.sonoff.view.MainActivity;
 
 
 public class MqttService extends Service {
+    private static final String POWER1 = "stat/tasmota_8231A8/POWER1";
+    private static final String POWER2 = "stat/tasmota_8231A8/POWER2";
+    private static final String POWER3 = "stat/tasmota_8231A8/POWER3";
     private String ip = "10.20.72.9", port = "1883";
     private final IBinder mBinder = new LocalBinder();
     private Handler mHandler;
     private List<Integer> idsNot = new ArrayList();
-    private static final String REQUEST_ACCEPT = "Notification";
+    private static final String INPUT_ONE = "1";
+    private static final String INPUT_TWO = "2";
+    private static final String INPUT_THREE = "3";
 
     private class ToastRunnable implements Runnable {//to toast to your main activity for some time
         String mText;
@@ -206,11 +211,24 @@ public class MqttService extends Service {
                 public void messageArrived(String topic, MqttMessage msg) throws Exception {
                     Log.i(TAG, "Message arrived from topic " + topic);
                     Log.i(TAG, msg.toString());
-                    showNotification("Cambio di stato", msg.toString());
                     LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
-                    Intent intent = new Intent(REQUEST_ACCEPT);
+                    Intent intent;
+                    String input;
+                    if(topic.equals(POWER1)){
+                        intent = new Intent(INPUT_ONE);
+                        input = "Lo stato dell' INPUT 1 è: ";
+                    }
+                    else if(topic.equals(POWER2)){
+                        intent = new Intent(INPUT_TWO);
+                        input = "Lo stato dell' INPUT 2 è: ";
+                    }
+                    else{
+                        intent = new Intent(INPUT_THREE);
+                        input = "Lo stato dell' INPUT 3 è: ";
+                    }
                     intent.putExtra("status", msg.toString());
                     broadcaster.sendBroadcast(intent);
+                    showNotification("Cambio di stato", input+msg.toString());
                 }
 
                 @Override
@@ -219,7 +237,9 @@ public class MqttService extends Service {
                 }
             });
 
-            mqttClient.subscribe("stat/tasmota_8231A8/POWER1" , 2);
+            mqttClient.subscribe(POWER1 , 2);
+            mqttClient.subscribe(POWER2 , 2);
+            mqttClient.subscribe(POWER3 , 2);
 
         } catch (MqttSecurityException e) {
             e.printStackTrace();
