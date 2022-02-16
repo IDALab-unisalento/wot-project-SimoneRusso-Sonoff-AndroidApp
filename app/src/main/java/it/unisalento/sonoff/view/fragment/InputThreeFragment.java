@@ -47,20 +47,20 @@ public class InputThreeFragment extends Fragment {
         user = (User) getArguments().getSerializable("user");
 
         restService = new RestService(this.getContext());
-        restService.getStatus(toggleButton, user);
+        restService.getStatus(toggleButton, user, 3);
 
         toggleButton.setOnCheckedChangeListener((compoundButton, b) -> {
             if(compoundButton.isPressed()){
                 tvAccess.setText("");
                 if(compoundButton.isChecked())
-                    restService.changeStatusON(compoundButton, user);
+                    restService.changeStatusON(compoundButton, user, 3);
                 else
-                    restService.changeStatusOFF(compoundButton, user);
+                    restService.changeStatusOFF(compoundButton, user, 3);
 
             }
         });
 
-        buttonAccess.setOnClickListener(view1 -> restService.getStatus(tvAccess, user));
+        buttonAccess.setOnClickListener(view1 -> restService.getStatus(tvAccess, user, 3));
 
         LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(mMessageReceiver, new IntentFilter(INPUT_THREE));
 

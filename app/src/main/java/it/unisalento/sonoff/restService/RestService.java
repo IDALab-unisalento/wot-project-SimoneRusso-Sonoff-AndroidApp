@@ -33,7 +33,9 @@ public class RestService {
     //CASA
     //String address = "http://192.168.1.100:8082";
     //STUDIUM
-    String address = "http://10.20.72.9:8082";
+    //String address = "http://10.20.72.9:8082";
+    //HOTSPOT
+    String address = "http://172.20.10.4:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -41,8 +43,8 @@ public class RestService {
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public void getStatus(ToggleButton toggleButton, User user){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
+    public void getStatus(ToggleButton toggleButton, User user, int input){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken()+"/"+input)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -62,8 +64,8 @@ public class RestService {
                     }
                 });
     }
-    public void getStatus(TextView textView, User user){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
+    public void getStatus(TextView textView, User user, int input){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken()+"/"+input)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -98,8 +100,8 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton toggleButton, User user) {
-        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken())
+    public void changeStatusON(CompoundButton toggleButton, User user, int input) {
+        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken()+"/"+input)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -121,8 +123,8 @@ public class RestService {
                 });
     }
 
-    public void changeStatusOFF(CompoundButton toggleButton, User user) {
-        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken())
+    public void changeStatusOFF(CompoundButton toggleButton, User user, int input) {
+        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken()+"/"+input)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -144,7 +146,6 @@ public class RestService {
                 });
     }
 
-    //TODO:vedere se funziona
     public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
         Credential credential = new Credential(username, password);
 
@@ -173,6 +174,8 @@ public class RestService {
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error", anError.getMessage());
+                        progress.dismiss();
+
                     }
                 });
     }
@@ -186,11 +189,14 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         progress.dismiss();
+                        tvErDash.setVisibility(View.VISIBLE);
                         tvErDash.setText("Operazione completata");
                     }
 
                     @Override
                     public void onError(ANError anError) {
+                        progress.dismiss();
+                        tvErDash.setVisibility(View.VISIBLE);
                         tvErDash.setText("Si è verificat un errore");
                     }
                 });
