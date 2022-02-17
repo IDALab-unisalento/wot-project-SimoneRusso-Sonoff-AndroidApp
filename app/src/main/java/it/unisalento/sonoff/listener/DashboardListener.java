@@ -1,27 +1,18 @@
 package it.unisalento.sonoff.listener;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.text.Editable;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+
 import android.widget.TextView;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import java.util.HashMap;
-import java.util.Map;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.User;
 import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.DashboardActivity;
 
-@SuppressWarnings("ConstantConditions")
 public class DashboardListener implements View.OnClickListener {
-    @SuppressWarnings("FieldMayBeFinal")
-    private DashboardActivity activity;
-
-
+    private final DashboardActivity activity;
     public DashboardListener(DashboardActivity activity) {
         this.activity = activity;
     }
@@ -30,12 +21,12 @@ public class DashboardListener implements View.OnClickListener {
     public void onClick(View view) {
             if(view.getId() == R.id.btnAddUser) {
                 if (activity.getEtNewEmail().getText().toString().length() != 0 && activity.getEtNewPwd().getText().toString().length() != 0 && activity.getEtRole().getText().toString().length() != 0) {
-                    ProgressDialog progress = new ProgressDialog(activity);
-                    progress.setTitle("Loading");
-                    progress.setMessage("Operazione in corso...");
-                    progress.setCancelable(false);
-                    progress.show();
-                    createUser(progress, activity.getEtNewEmail().getText().toString(),
+                    activity.setProgressDialog(new ProgressDialog(activity));
+                    activity.getProgressDialog().setTitle("Loading");
+                    activity.getProgressDialog().setMessage("Operazione in corso...");
+                    activity.getProgressDialog().setCancelable(false);
+                    activity.getProgressDialog().show();
+                    createUser(activity.getProgressDialog(), activity.getEtNewEmail().getText().toString(),
                             activity.getEtNewPwd().getText().toString(), activity.getEtRole().getText().toString(),
                             activity.getUser(), activity.getTvErDash());
                 } else {
@@ -59,9 +50,5 @@ public class DashboardListener implements View.OnClickListener {
 
 
     }
-
-    private void addUserToDb(ProgressDialog progress) {
-    }
-
 
 }

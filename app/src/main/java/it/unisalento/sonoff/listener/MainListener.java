@@ -9,11 +9,10 @@ import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.DashboardActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
-@SuppressWarnings("FieldMayBeFinal")
 public class MainListener implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-    private RestService restService;
-    private MainActivity mainActivity;
+    private final RestService restService;
+    private final MainActivity mainActivity;
 
     public MainListener(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -24,17 +23,16 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         if(compoundButton.isPressed()){
             if(compoundButton.isChecked())
-                restService.changeStatusON(compoundButton, mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
+                restService.changeStatusON(mainActivity);
             else if (!compoundButton.isChecked())
-                restService.changeStatusOFF(compoundButton, mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
+                restService.changeStatusOFF(mainActivity);
         }
     }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnAccess) {
-
-            restService.getStatus(mainActivity.getTvAccess(), mainActivity, mainActivity.getUser());
+            restService.getState(mainActivity);
         }
         if(view.getId() == R.id.tvDashboard){
             Intent intent = new Intent(mainActivity, DashboardActivity.class);

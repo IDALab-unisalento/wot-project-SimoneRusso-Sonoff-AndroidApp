@@ -39,17 +39,18 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.view.MainActivity;
 
 
+@SuppressWarnings("FieldCanBeLocal")
 public class MqttService extends Service {
-    private String ip = "10.20.72.9", port = "1883";
+    private final String ip = "10.3.141.130";
+    private final String port = "1883";
     private final IBinder mBinder = new LocalBinder();
     private Handler mHandler;
-    private List<Integer> idsNot = new ArrayList();
+    private ArrayList<Integer> idsNot = new ArrayList();
     private static final String REQUEST_ACCEPT = "Notification";
 
     private class ToastRunnable implements Runnable {//to toast to your main activity for some time

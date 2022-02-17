@@ -2,6 +2,7 @@ package it.unisalento.sonoff.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPwd;
     private TextView tvErLog;
+    private Button btnLogin;
+    private LoginListener loginListener;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +26,9 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etPwd = findViewById(R.id.etPwd);
         tvErLog = findViewById(R.id.tvErLog);
-        Button btnLogin = findViewById(R.id.btnLogin);
-        LoginListener listener = new LoginListener(this);
-        btnLogin.setOnClickListener(listener);
+        btnLogin = findViewById(R.id.btnLogin);
+        loginListener = new LoginListener(this);
+        btnLogin.setOnClickListener(loginListener);
     }
 
     public EditText getEtUsername() {
@@ -35,8 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         return etPwd;
     }
 
-    public TextView getTvErLog() {
-        return tvErLog;
+    public ProgressDialog getProgressDialog() {
+        return progressDialog;
     }
 
+    public void setProgressDialog(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
+    }
 }

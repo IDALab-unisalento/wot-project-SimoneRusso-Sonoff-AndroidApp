@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -30,7 +28,7 @@ import it.unisalento.sonoff.view.MainActivity;
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
     //String address = "http://192.168.1.100:8082";
-    String address = "http://10.20.72.9:8082";
+    String address = "http://10.3.141.130:8082";
     String clientId;
 
     public RestService(Context context) {
@@ -38,15 +36,16 @@ public class RestService {
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public void getStatus(ToggleButton toggleButton, MainActivity activity, User user){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
+    public void getInitialState(MainActivity activity){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+activity.getUser().getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        toggleButton.setChecked(response.equals("ON"));
+                        activity.getToggleButton().setChecked(response.equals("ON"));
+                        activity.getProgressDialog().dismiss();
                     }
 
                     @Override
@@ -61,23 +60,24 @@ public class RestService {
                     }
                 });
     }
-    public void getStatus(TextView textView, MainActivity activity, User user){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken())
+
+    public void getState(MainActivity activity){
+        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+activity.getUser().getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        textView.setVisibility(View.VISIBLE);
+                        activity.getTvAccess().setVisibility(View.VISIBLE);
 
                         if(response.equals("ON")) {
-                            textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.parseColor("#417A00"));
+                            activity.getTvAccess().setText(R.string.access_ok);
+                            activity.getTvAccess().setTextColor(Color.GREEN);
                         }
                         else if(response.equals("OFF")){
-                            textView.setText(R.string.access_deny);
-                            textView.setTextColor(Color.RED);
+                            activity.getTvAccess().setText(R.string.access_deny);
+                            activity.getTvAccess().setTextColor(Color.RED);
                         }
                     }
 
@@ -90,9 +90,9 @@ public class RestService {
                             activity.startActivity(intent);
                         }
                         else {
-                            textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.parseColor("#417A00"));
-                            textView.setVisibility(View.VISIBLE);
+                            activity.getTvAccess().setText(R.string.access_ok);
+                            activity.getTvAccess().setTextColor(Color.parseColor("#417A00"));
+                            activity.getTvAccess().setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -100,8 +100,8 @@ public class RestService {
     }
 
 
-    public void changeStatusON(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
-        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken())
+    public void changeStatusON(MainActivity activity) {
+        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+activity.getUser().getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -109,7 +109,8 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Rest (changeStatus()):", "status changed" + response);
-                        textView.setText("");
+                        activity.getTvAccess().setText("");
+                        activity.getTvAccess().setVisibility(View.GONE);
                     }
 
                     @Override
@@ -121,13 +122,13 @@ public class RestService {
                             activity.startActivity(intent);
                         }
                         else
-                            toggleButton.setChecked(false);
+                            activity.getToggleButton().setChecked(false);
                     }
                 });
     }
 
-    public void changeStatusOFF(CompoundButton toggleButton, TextView textView, MainActivity activity, User user) {
-        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken())
+    public void changeStatusOFF(MainActivity activity) {
+        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+activity.getUser().getToken())
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsString(new StringRequestListener() {
@@ -135,7 +136,8 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Rest (changeStatus()):", "status changed " + response);
-                        textView.setText("");
+                        activity.getTvAccess().setText("");
+                        activity.getTvAccess().setVisibility(View.GONE);
                     }
 
                     @Override
@@ -147,14 +149,13 @@ public class RestService {
                             activity.startActivity(intent);
                         }
                         else
-                            toggleButton.setChecked(true);
+                            activity.getToggleButton().setChecked(true);
                     }
                 });
     }
 
-    //TODO:vedere se funziona
-    public void getAccessToken(LoginActivity activity, ProgressDialog progress, String username, String password){
-        Credential credential = new Credential(username, password);
+    public void getAccessToken(LoginActivity activity){
+        Credential credential = new Credential(activity.getEtUsername().getText().toString(), activity.getEtPwd().getText().toString());
 
         AndroidNetworking.post(address+"/auth")
                 .setPriority(Priority.LOW)
@@ -168,10 +169,11 @@ public class RestService {
                             user.setUsername((String) response.get("username"));
                             user.setRole((String) response.get("role"));
                             user.setToken((String) response.get("token"));
+                            user.setRefreshTken((String) response.get("refreshToken"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        progress.dismiss();
+                        activity.getProgressDialog().dismiss();
                         Intent intent = new Intent(activity, MainActivity.class);
                         intent.putExtra("user", user);
                         activity.startActivity(intent);
@@ -194,12 +196,12 @@ public class RestService {
                     @Override
                     public void onResponse(String response) {
                         progress.dismiss();
-                        tvErDash.setText("Operazione completata");
+                        tvErDash.setText(R.string.operation_completed);
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        tvErDash.setText("Si è verificat un errore");
+                        tvErDash.setText(R.string.error);
                     }
                 });
     }

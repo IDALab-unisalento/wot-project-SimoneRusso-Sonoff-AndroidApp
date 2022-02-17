@@ -2,6 +2,7 @@ package it.unisalento.sonoff.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -19,6 +20,11 @@ public class DashboardActivity extends AppCompatActivity {
     private EditText etNewPwd;
     private EditText etRole;
     private User user;
+    private Button btnAddUser;
+    private ImageButton btnRandPwd;
+    private DashboardListener dashboardListener;
+    private Intent intent;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +37,17 @@ public class DashboardActivity extends AppCompatActivity {
             etNewEmail = findViewById(R.id.etNewEmail);
             etNewPwd = findViewById(R.id.etNewPwd);
             etRole = findViewById(R.id.etRole);
-            Button btnAddUser = findViewById(R.id.btnAddUser);
-            ImageButton btnRandPwd = findViewById(R.id.btnRandPwd);
+            btnAddUser = findViewById(R.id.btnAddUser);
+            btnRandPwd = findViewById(R.id.btnRandPwd);
 
-            DashboardListener listener = new DashboardListener(this);
+            dashboardListener = new DashboardListener(this);
 
-            btnAddUser.setOnClickListener(listener);
-            btnRandPwd.setOnClickListener(listener);
+            btnAddUser.setOnClickListener(dashboardListener);
+            btnRandPwd.setOnClickListener(dashboardListener);
 
         }
         else{
-            Intent intent = new Intent(this, LoginActivity.class);
+            intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
@@ -65,5 +71,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     public User getUser() {
         return user;
+    }
+
+    public ProgressDialog getProgressDialog() {
+        return progressDialog;
+    }
+
+    public void setProgressDialog(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
     }
 }

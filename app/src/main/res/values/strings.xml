@@ -18,5 +18,7 @@
     <string name="on">On</string>
     <string name="access_request">Richiedi accesso</string>
     <string name="username">Username</string>
+    <string name="operation_completed">Operazione completata</string>
+    <string name="error">Si è verificat un errore</string>
 
 </resources>
