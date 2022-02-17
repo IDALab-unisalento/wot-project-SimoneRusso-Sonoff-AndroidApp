@@ -48,7 +48,7 @@ public class InputOneFragment extends Fragment {
         toggleButton = view.findViewById(R.id.toggleBtnInput1);
         user = (User) getArguments().getSerializable("user");
 
-        restService = new RestService(this.getContext());
+        restService = new RestService(this.getContext(), 1);
         restService.getStatus(toggleButton, user, 1);
 
         toggleButton.setOnCheckedChangeListener((compoundButton, b) -> {

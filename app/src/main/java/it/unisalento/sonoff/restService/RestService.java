@@ -35,85 +35,115 @@ public class RestService {
     //STUDIUM
     //String address = "http://10.20.72.9:8082";
     //HOTSPOT
-    String address = "http://172.20.10.4:8082";
+    private String ip = "10.3.141.130";
+
+    String address = "http://"+ip+":8082";
     String clientId;
 
-    public RestService(Context context) {
+    public RestService(Context context, int fragment) {
+        AndroidNetworking.initialize(context);
+        clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)+fragment;
+    }
+
+    public RestService(Context context){
         AndroidNetworking.initialize(context);
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
+
     public void getStatus(ToggleButton toggleButton, User user, int input){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken()+"/"+input)
+        AndroidNetworking.post(address+"/getStatus/"+clientId+"/"+input)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(user)
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        toggleButton.setChecked(response.equals("ON"));
+                        try {
+                            String status = String.valueOf(response.get("status"));
+                            toggleButton.setChecked(status.equals("ON"));
+                        } catch (JSONException e) {
+                            e.getMessage();
+                        }
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            user.setToken(jsonUser.getString("token"));
+                            user.setRefreshToken(jsonUser.getString("refreshToken"));
+                            user.notify();
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.e("Rest (getStatus()):", anError.toString());
-                        Log.e("Rest (getStatus()):", anError.getErrorBody());
-                        if(anError.getErrorCode()==401){
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorDetail());
 
-                        }
                     }
                 });
+
     }
     public void getStatus(TextView textView, User user, int input){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+user.getToken()+"/"+input)
+        AndroidNetworking.post(address+"/getStatus/"+clientId+"/"+input)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(user)
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         Log.w("Rest (getStatus()):", "stato corrente " + response);
                         textView.setVisibility(View.VISIBLE);
-
-                        if(response.equals("ON")) {
-                            textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.parseColor("#417A00"));
+                        try {
+                            String status = String.valueOf(response.get("status"));
+                            if(status.equals("ON")) {
+                                textView.setText(R.string.access_ok);
+                                textView.setTextColor(Color.parseColor("#417A00"));
+                            }
+                            else if(status.equals("OFF")){
+                                textView.setText(R.string.access_deny);
+                                textView.setTextColor(Color.RED);
+                            }
+                        } catch (JSONException e) {
                         }
-                        else if(response.equals("OFF")){
-                            textView.setText(R.string.access_deny);
-                            textView.setTextColor(Color.RED);
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            user.setToken(jsonUser.getString("token"));
+                            user.setRefreshToken(jsonUser.getString("refreshToken"));
+                        } catch (JSONException e) {
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.e("Rest (getStatus()):", anError.toString());
-                        if(anError.getErrorCode()==401){
-                        }
-                        else {
-                            textView.setText(R.string.access_ok);
-                            textView.setTextColor(Color.parseColor("#417A00"));
-                            textView.setVisibility(View.VISIBLE);
-                        }
-
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorBody());
+                        Log.e("Rest (getStatus()):", "stato corrente body:" + anError.getErrorBody());
                     }
                 });
     }
 
 
     public void changeStatusON(CompoundButton toggleButton, User user, int input) {
-        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+user.getToken()+"/"+input)
+        AndroidNetworking.post(address+"/changeStatusON/"+clientId+"/"+input)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(user)
                 .build()
-                .getAsString(new StringRequestListener() {
-
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Rest (changeStatus()):", "status changed" + response);
+                    public void onResponse(JSONObject response) {
+                        toggleButton.setChecked(true);
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            user.setToken(jsonUser.getString("token"));
+                            user.setRefreshToken(jsonUser.getString("refreshToken"));
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.e("Rest (changeStatus()):", anError.toString());
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorCode());
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorDetail());
+
                         if(anError.getErrorCode()==401){
 
                         }
@@ -121,22 +151,30 @@ public class RestService {
                             toggleButton.setChecked(false);
                     }
                 });
+
     }
 
     public void changeStatusOFF(CompoundButton toggleButton, User user, int input) {
-        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+user.getToken()+"/"+input)
+        AndroidNetworking.post(address+"/changeStatusOFF/"+clientId+"/"+input)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(user)
                 .build()
-                .getAsString(new StringRequestListener() {
-
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Rest (changeStatus()):", "status changed " + response);
+                    public void onResponse(JSONObject response) {
+                        toggleButton.setChecked(false);
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            user.setToken(jsonUser.getString("token"));
+                            user.setRefreshToken(jsonUser.getString("refreshToken"));
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.e("Rest (changeStatus()):", anError.toString());
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorCode());
+                        Log.e("Rest (getStatus()):", "stato corrente message:" + anError.getErrorDetail());
                         if(anError.getErrorCode()==401){
 
                         }
@@ -161,6 +199,7 @@ public class RestService {
                             user.setUsername((String) response.get("username"));
                             user.setRole((String) response.get("role"));
                             user.setToken((String) response.get("token"));
+                            user.setRefreshToken((String) response.get("refreshToken"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -47,12 +47,7 @@ import it.unisalento.sonoff.view.MainActivity;
 
 public class MqttService extends Service {
     //TODO: indirizzi ip
-    //STUDIUM
-    //private String ip = "10.20.72.9", port = "1883";
-    //CASA
-    //private String ip = "192.168.1.100", port = "1883";
-    //HOTSPOT
-    private String ip = "172.20.10.4", port ="1883";
+    private String ip = "10.3.141.130", port ="1883";
 
 
     private static final String POWER1 = "stat/tasmota_8231A8/POWER1";
