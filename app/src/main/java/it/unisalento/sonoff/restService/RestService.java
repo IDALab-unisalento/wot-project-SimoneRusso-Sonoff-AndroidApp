@@ -22,6 +22,8 @@ import org.json.JSONObject;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.Credential;
 import it.unisalento.sonoff.model.User;
+import it.unisalento.sonoff.utils.ToastRunnable;
+import it.unisalento.sonoff.view.DashboardActivity;
 import it.unisalento.sonoff.view.LoginActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
@@ -30,22 +32,37 @@ public class RestService {
     //String address = "http://192.168.1.100:8082";
     String address = "http://10.3.141.130:8082";
     String clientId;
+    Context context;
 
     public RestService(Context context) {
+        this.context=context;
         AndroidNetworking.initialize(context);
         clientId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     public void getInitialState(MainActivity activity){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+activity.getUser().getToken())
+        AndroidNetworking.post(address+"/getStatus1/"+clientId)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(activity.getUser())
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        activity.getToggleButton().setChecked(response.equals("ON"));
-                        activity.getProgressDialog().dismiss();
+                    public void onResponse(JSONObject response) {
+                        Log.w("Rest(getInitialState():", "stato corrente " + response);
+                        try {
+                            String status = response.getString("status");
+                            activity.getToggleButton().setChecked(status.equals("ON"));
+                            activity.getProgressDialog().dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            activity.getUser().setToken(jsonUser.getString("token"));
+                            activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
+                            //activity.getUser().notify();
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
@@ -62,55 +79,73 @@ public class RestService {
     }
 
     public void getState(MainActivity activity){
-        AndroidNetworking.get(address+"/getStatus/"+clientId+"/"+activity.getUser().getToken())
+        AndroidNetworking.post(address+"/getStatus1/"+clientId)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(activity.getUser())
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.w("Rest (getStatus()):", "stato corrente " + response);
-                        activity.getTvAccess().setVisibility(View.VISIBLE);
-
-                        if(response.equals("ON")) {
-                            activity.getTvAccess().setText(R.string.access_ok);
-                            activity.getTvAccess().setTextColor(Color.GREEN);
+                    public void onResponse(JSONObject response) {
+                        Log.w("Rest (getState()):", "stato corrente " + response);
+                        try {
+                            String status = response.getString("status");
+                            activity.getTvAccess().setVisibility(View.VISIBLE);
+                            if(status.equals("ON")) {
+                                activity.getTvAccess().setText(R.string.access_ok);
+                                activity.getTvAccess().setTextColor(Color.GREEN);
+                            }
+                            else if(status.equals("OFF")){
+                                activity.getTvAccess().setText(R.string.access_deny);
+                                activity.getTvAccess().setTextColor(Color.RED);
+                            }                } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        else if(response.equals("OFF")){
-                            activity.getTvAccess().setText(R.string.access_deny);
-                            activity.getTvAccess().setTextColor(Color.RED);
+                        try {
+                            JSONObject jsonUser = (JSONObject) response.get("user");
+                            activity.getUser().setToken(jsonUser.getString("token"));
+                            activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
+                            //activity.getUser().notify();
+                        } catch (JSONException e) {
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.e("Rest (getStatus()):", anError.toString());
+                        Log.e("Rest (getStatus()):", anError.getErrorBody());
                         if(anError.getErrorCode()==401){
                             Intent intent = new Intent(activity, LoginActivity.class);
                             activity.finish();
                             activity.startActivity(intent);
                         }
                         else {
-                            activity.getTvAccess().setText(R.string.access_ok);
-                            activity.getTvAccess().setTextColor(Color.parseColor("#417A00"));
-                            activity.getTvAccess().setVisibility(View.VISIBLE);
+                            activity.getTvAccess().setVisibility(View.GONE);
+                            new ToastRunnable("Qualcosa è andato storto, riprova", 500, context);
                         }
-
                     }
                 });
     }
 
 
     public void changeStatusON(MainActivity activity) {
-        AndroidNetworking.get(address+"/changeStatusON/"+clientId+"/"+activity.getUser().getToken())
+        AndroidNetworking.post(address+"/changeStatusON/"+clientId)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(activity.getUser())
                 .build()
-                .getAsString(new StringRequestListener() {
-
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         Log.d("Rest (changeStatus()):", "status changed" + response);
                         activity.getTvAccess().setText("");
                         activity.getTvAccess().setVisibility(View.GONE);
+                        activity.getToggleButton().setChecked(true);
+                        try {
+                            if(!response.getString("token").equals("null")) {
+                                activity.getUser().setToken(response.getString("token"));
+                                activity.getUser().setRefreshToken(response.getString("refreshToken"));
+                            }
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
@@ -121,23 +156,34 @@ public class RestService {
                             activity.finish();
                             activity.startActivity(intent);
                         }
-                        else
-                            activity.getToggleButton().setChecked(false);
+                        else{
+                            new ToastRunnable("Qualcosa è andato storto, riprova", 500, context);
+                        }
+                        activity.getToggleButton().setChecked(false);
+
                     }
                 });
     }
 
     public void changeStatusOFF(MainActivity activity) {
-        AndroidNetworking.get(address+"/changeStatusOFF/"+clientId+"/"+activity.getUser().getToken())
+        AndroidNetworking.post(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)
+                .addApplicationJsonBody(activity.getUser())
                 .build()
-                .getAsString(new StringRequestListener() {
-
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Rest (changeStatus()):", "status changed " + response);
+                    public void onResponse(JSONObject response) {
+                        Log.d("Rest (changeStatus()):", "status changed" + response);
                         activity.getTvAccess().setText("");
                         activity.getTvAccess().setVisibility(View.GONE);
+                        activity.getToggleButton().setChecked(false);
+                        try {
+                            if(!response.getString("token").equals("null")) {
+                                activity.getUser().setToken(response.getString("token"));
+                                activity.getUser().setRefreshToken(response.getString("refreshToken"));
+                            }
+                        } catch (JSONException e) {
+                        }
                     }
 
                     @Override
@@ -148,8 +194,11 @@ public class RestService {
                             activity.finish();
                             activity.startActivity(intent);
                         }
-                        else
-                            activity.getToggleButton().setChecked(true);
+                        else{
+                            new ToastRunnable("Qualcosa è andato storto, riprova", 500, context);
+                        }
+                        activity.getToggleButton().setChecked(true);
+
                     }
                 });
     }
@@ -169,7 +218,7 @@ public class RestService {
                             user.setUsername((String) response.get("username"));
                             user.setRole((String) response.get("role"));
                             user.setToken((String) response.get("token"));
-                            user.setRefreshTken((String) response.get("refreshToken"));
+                            user.setRefreshToken((String) response.get("refreshToken"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -182,26 +231,42 @@ public class RestService {
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.d("error", anError.getMessage());
+                        Log.e("createuser:", "onError: ", anError);
+                        activity.getTvErLog().setVisibility(View.VISIBLE);
+                        activity.getTvErLog().setTextColor(Color.RED);
+                        activity.getTvErLog().setText("Username o password errati");
                     }
                 });
     }
 
-    public void createUser(String username, String password, String role, User user, ProgressDialog progress, TextView tvErDash) {
+    public void createUser(String username, String password, String role, ProgressDialog progress, DashboardActivity activity) {
         AndroidNetworking.post(address+"/createUser/"+username+"/"+password+"/"+role)
                 .setPriority(Priority.LOW)
-                .addApplicationJsonBody(user)
+                .addApplicationJsonBody(activity.getUser())
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         progress.dismiss();
-                        tvErDash.setText(R.string.operation_completed);
+                        activity.getEtRole().setText("");
+                        activity.getEtNewPwd().setText("");
+                        activity.getEtNewEmail().setText("");
+                        activity.getTvErDash().setText(R.string.operation_completed);
+                        activity.getTvErDash().setVisibility(View.VISIBLE);
+                        try {
+                            if(response.getString("token")!="null") {
+                                activity.getUser().setToken((String) response.get("token"));
+                                activity.getUser().setRefreshToken((String) response.get("refreshToken"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        tvErDash.setText(R.string.error);
+                        activity.getTvErDash().setText(R.string.error);
+                        activity.getTvErDash().setVisibility(View.VISIBLE);
                     }
                 });
     }

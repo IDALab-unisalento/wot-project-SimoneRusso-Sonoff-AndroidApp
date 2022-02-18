@@ -6,7 +6,7 @@ public class User implements Serializable {
     String username;
     String role;
     String token;
-    String refreshTken;
+    String refreshToken;
 
     public String getUsername() {
         return username;
@@ -32,11 +32,11 @@ public class User implements Serializable {
         this.token = token;
     }
 
-    public String getRefreshTken() {
-        return refreshTken;
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
-    public void setRefreshTken(String refreshTken) {
-        this.refreshTken = refreshTken;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

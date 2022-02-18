@@ -46,4 +46,12 @@ public class LoginActivity extends AppCompatActivity {
     public void setProgressDialog(ProgressDialog progressDialog) {
         this.progressDialog = progressDialog;
     }
+
+    public TextView getTvErLog() {
+        return tvErLog;
+    }
+
+    public void setTvErLog(TextView tvErLog) {
+        this.tvErLog = tvErLog;
+    }
 }

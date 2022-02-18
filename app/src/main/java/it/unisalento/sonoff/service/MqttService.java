@@ -41,6 +41,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import java.util.ArrayList;
 
 import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.utils.ToastRunnable;
 import it.unisalento.sonoff.view.MainActivity;
 
 
@@ -52,30 +53,6 @@ public class MqttService extends Service {
     private Handler mHandler;
     private ArrayList<Integer> idsNot = new ArrayList();
     private static final String REQUEST_ACCEPT = "Notification";
-
-    private class ToastRunnable implements Runnable {//to toast to your main activity for some time
-        String mText;
-        int mtime;
-
-        public ToastRunnable(String text, int time) {
-            mText = text;
-            mtime = time;
-        }
-
-        @Override
-        public void run() {
-
-            final Toast mytoast = Toast.makeText(getApplicationContext(), mText, Toast.LENGTH_LONG);
-            mytoast.show();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mytoast.cancel();
-                }
-            }, mtime);
-        }
-    }
 
     private static final String TAG = "mqttservice";
     private static boolean hasWifi = false;
@@ -227,13 +204,13 @@ public class MqttService extends Service {
         } catch (MqttException e) {
             switch (e.getReasonCode()) {
                 case MqttException.REASON_CODE_BROKER_UNAVAILABLE:
-                    mHandler.post(new ToastRunnable("WE ARE OFFLINE BROKER_UNAVAILABLE!", 1500));
+                    mHandler.post(new ToastRunnable("WE ARE OFFLINE BROKER_UNAVAILABLE!", 1500, getApplicationContext()));
                     break;
                 case MqttException.REASON_CODE_CLIENT_TIMEOUT:
-                    mHandler.post(new ToastRunnable("WE ARE OFFLINE CLIENT_TIMEOUT!", 1500));
+                    mHandler.post(new ToastRunnable("WE ARE OFFLINE CLIENT_TIMEOUT!", 1500, getApplicationContext()));
                     break;
                 case MqttException.REASON_CODE_CONNECTION_LOST:
-                    mHandler.post(new ToastRunnable("WE ARE OFFLINE CONNECTION_LOST!", 1500));
+                    mHandler.post(new ToastRunnable("WE ARE OFFLINE CONNECTION_LOST!", 1500, getApplicationContext()));
                     break;
                 case MqttException.REASON_CODE_SERVER_CONNECT_ERROR:
                     Log.v(TAG, "c" + e.getMessage());
@@ -248,7 +225,7 @@ public class MqttService extends Service {
                     Log.e(TAG, "a" + e.getMessage());
             }
         }
-        mHandler.post(new ToastRunnable("WE ARE ONLINE!", 500));
+        mHandler.post(new ToastRunnable("WE ARE ONLINE!", 500, getApplicationContext()));
 
     }
 

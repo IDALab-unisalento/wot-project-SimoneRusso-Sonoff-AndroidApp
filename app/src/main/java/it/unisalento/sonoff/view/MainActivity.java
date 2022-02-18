@@ -1,10 +1,12 @@
 package it.unisalento.sonoff.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -35,6 +41,14 @@ public class MainActivity extends AppCompatActivity{
     private MainListener mainListener;
     private RestService restService;
     private Intent intent;
+
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +104,20 @@ public class MainActivity extends AppCompatActivity{
 
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                User u = (User) data.getSerializableExtra("user");
+                user.setRefreshToken(u.getRefreshToken());
+                user.setToken(u.getToken());
+
+            }
+        }
+
+    }
+
     public ToggleButton getToggleButton() {
         return toggleButton;
     }
@@ -105,5 +133,6 @@ public class MainActivity extends AppCompatActivity{
     public ProgressDialog getProgressDialog() {
         return progressDialog;
     }
-    
+
+
 }

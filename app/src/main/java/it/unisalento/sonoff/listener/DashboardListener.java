@@ -27,8 +27,7 @@ public class DashboardListener implements View.OnClickListener {
                     activity.getProgressDialog().setCancelable(false);
                     activity.getProgressDialog().show();
                     createUser(activity.getProgressDialog(), activity.getEtNewEmail().getText().toString(),
-                            activity.getEtNewPwd().getText().toString(), activity.getEtRole().getText().toString(),
-                            activity.getUser(), activity.getTvErDash());
+                            activity.getEtNewPwd().getText().toString(), activity.getEtRole().getText().toString());
                 } else {
                     if (activity.getEtNewEmail().getText().toString().length() == 0)
                         activity.getEtNewEmail().setError("Non può essere vuoto!");
@@ -44,9 +43,9 @@ public class DashboardListener implements View.OnClickListener {
             }
     }
 
-    private void createUser(ProgressDialog progress, String username, String password, String role, User user, TextView tvErDash) {
+    private void createUser(ProgressDialog progress, String username, String password, String role) {
         RestService restService = new RestService(activity);
-        restService.createUser(username, password, role, user, progress, tvErDash);
+        restService.createUser(username, password, role, progress, activity);
 
 
     }
