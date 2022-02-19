@@ -1,6 +1,7 @@
 package it.unisalento.sonoff.service;
 
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,20 +11,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -49,7 +47,7 @@ import it.unisalento.sonoff.view.MainActivity;
 public class MqttService extends Service {
     private final String ip = "10.3.141.130";
     private final String port = "1883";
-    private final IBinder mBinder = new LocalBinder();
+
     private Handler mHandler;
     private ArrayList<Integer> idsNot = new ArrayList();
     private static final String REQUEST_ACCEPT = "Notification";
@@ -60,70 +58,46 @@ public class MqttService extends Service {
     private ConnectivityManager mConnMan;
     private volatile IMqttAsyncClient mqttClient;
     private String uniqueID;
+    private final String status1Topic = "stat/tasmota_8231A8/POWER1";
 
 
     class MQTTBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            IMqttToken token;
-            boolean hasConnectivity = false;
+            //VERIFICA CHE SIA ATTIVA LA CONNESSIONE AD INTERNET
+            Log.d(TAG, "MQTTBroadcastReceiver: onReceive ");
+            boolean hasConnectivity;
             boolean hasChanged = false;
-            NetworkInfo infos[] = mConnMan.getAllNetworkInfo();
-            for (int i = 0; i < infos.length; i++) {
-                if (infos[i].getTypeName().equalsIgnoreCase("MOBILE")) {
-                    if ((infos[i].isConnected() != hasMmobile)) {
+            NetworkInfo[] infos = mConnMan.getAllNetworkInfo();
+            for (NetworkInfo info : infos) {
+                if (info.getTypeName().equalsIgnoreCase("MOBILE")) {
+                    if ((info.isConnected() != hasMmobile)) {
                         hasChanged = true;
-                        hasMmobile = infos[i].isConnected();
+                        hasMmobile = info.isConnected();
                     }
-                    Log.d(TAG, infos[i].getTypeName() + " is " + infos[i].isConnected());
-                } else if (infos[i].getTypeName().equalsIgnoreCase("WIFI")) {
-                    if ((infos[i].isConnected() != hasWifi)) {
+                    Log.d(TAG, info.getTypeName() + " is " + info.isConnected());
+                } else if (info.getTypeName().equalsIgnoreCase("WIFI")) {
+                    if ((info.isConnected() != hasWifi)) {
                         hasChanged = true;
-                        hasWifi = infos[i].isConnected();
+                        hasWifi = info.isConnected();
                     }
-                    Log.d(TAG, infos[i].getTypeName() + " is " + infos[i].isConnected());
+                    Log.d(TAG, info.getTypeName() + " is " + info.isConnected());
                 }
             }
             hasConnectivity = hasMmobile || hasWifi;
             Log.v(TAG, "hasConn: " + hasConnectivity + " hasChange: " + hasChanged + " - " + (mqttClient == null || !mqttClient.isConnected()));
             if (hasConnectivity && hasChanged && (mqttClient == null || !mqttClient.isConnected())) {
                 doConnect();
-
             }
 
 
         }
     }
 
-
-    public class LocalBinder extends Binder {
-        public MqttService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return MqttService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    public void publish(String topic, MqttMessage message) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);// we create a 'shared" memory where we will share our preferences for the limits and the values that we get from onsensorchanged
-        try {
-
-            mqttClient.publish(topic, message);
-
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
     @Override
     public void onCreate() {
+        Log.d(TAG, "MqttService: onCreate ");
 
         mHandler = new Handler();//for toasts
         IntentFilter intentf = new IntentFilter();
@@ -135,10 +109,18 @@ public class MqttService extends Service {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        Log.d(TAG, "MqttService: onConfigurationChanged ");
+
         Log.d(TAG, "onConfigurationChanged()");
         android.os.Debug.waitForDebugger();
         super.onConfigurationChanged(newConfig);
 
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
@@ -149,6 +131,7 @@ public class MqttService extends Service {
     }
 
 
+    @SuppressLint("HardwareIds")
     private void setClientID() {
         uniqueID = "ANDROID:"+android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
         Log.d(TAG, "uniqueID=" + uniqueID);
@@ -181,7 +164,7 @@ public class MqttService extends Service {
                 }
 
                 @Override
-                public void messageArrived(String topic, MqttMessage msg) throws Exception {
+                public void messageArrived(String topic, MqttMessage msg){
                     Log.i(TAG, "Message arrived from topic " + topic);
                     Log.i(TAG, msg.toString());
                     showNotification("Cambio di stato", msg.toString());
@@ -197,7 +180,7 @@ public class MqttService extends Service {
                 }
             });
 
-            mqttClient.subscribe("stat/tasmota_8231A8/POWER1" , 2);
+            mqttClient.subscribe(status1Topic , 2);
 
         } catch (MqttSecurityException e) {
             e.printStackTrace();
