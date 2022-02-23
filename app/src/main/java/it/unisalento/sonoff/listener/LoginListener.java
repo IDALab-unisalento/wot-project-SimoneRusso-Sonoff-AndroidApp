@@ -25,7 +25,7 @@ public class LoginListener implements View.OnClickListener {
             activity.getProgressDialog().setMessage("Recupero i dati utente");
             activity.getProgressDialog().setCancelable(false); // disable dismiss by tapping outside of the dialog
             activity.getProgressDialog().show();
-            restService.getAccessToken(activity);
+            restService.authentication(activity);
 
         }
 

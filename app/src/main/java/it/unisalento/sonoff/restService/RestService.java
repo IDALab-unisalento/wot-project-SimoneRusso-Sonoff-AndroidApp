@@ -203,7 +203,7 @@ public class RestService {
                 });
     }
 
-    public void getAccessToken(LoginActivity activity){
+    public void authentication(LoginActivity activity){
         Credential credential = new Credential(activity.getEtUsername().getText().toString(), activity.getEtPwd().getText().toString());
 
         AndroidNetworking.post(address+"/auth")
@@ -231,7 +231,7 @@ public class RestService {
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.e("createuser:", "onError: ", anError);
+                        Log.e("autentication err:", "onError: ", anError);
                         activity.getTvErLog().setVisibility(View.VISIBLE);
                         activity.getTvErLog().setTextColor(Color.RED);
                         activity.getTvErLog().setText("Username o password errati");
