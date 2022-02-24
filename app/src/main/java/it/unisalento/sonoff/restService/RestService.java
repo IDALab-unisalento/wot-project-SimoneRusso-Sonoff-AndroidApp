@@ -41,7 +41,7 @@ public class RestService {
     }
 
     public void getInitialState(MainActivity activity){
-        AndroidNetworking.post(address+"/getStatus1/"+clientId)
+        AndroidNetworking.post(address+"/getStatus/"+clientId)
                 .setPriority(Priority.LOW)
                 .addApplicationJsonBody(activity.getUser())
                 .build()
@@ -51,8 +51,14 @@ public class RestService {
                         Log.w("Rest(getInitialState():", "stato corrente " + response);
                         try {
                             String status = response.getString("status");
+                            String touchSensor = response.getString("touchSensor");
+                            String pirSensor = response.getString("pirSensor");
                             activity.getToggleButton().setChecked(status.equals("ON"));
                             activity.getProgressDialog().dismiss();
+                            if(touchSensor.equals("ON"))
+                                activity.getTouchSensorImage().setImageResource(R.drawable.ic_baseline_circle_green);//TODO: berificare uscita sensori
+                            if(pirSensor.equals("ON"))
+                                activity.getPirSensorImage().setImageResource(R.drawable.ic_baseline_circle_green); //TODO: berificare uscita sensori
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -60,7 +66,6 @@ public class RestService {
                             JSONObject jsonUser = (JSONObject) response.get("user");
                             activity.getUser().setToken(jsonUser.getString("token"));
                             activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
-                            //activity.getUser().notify();
                         } catch (JSONException e) {
                         }
                     }
@@ -78,8 +83,8 @@ public class RestService {
                 });
     }
 
-    public void getState(MainActivity activity){
-        AndroidNetworking.post(address+"/getStatus1/"+clientId)
+    public void getTouchSensorState(MainActivity activity){
+        AndroidNetworking.post(address+"/getTouchSensorState/"+clientId)
                 .setPriority(Priority.LOW)
                 .addApplicationJsonBody(activity.getUser())
                 .build()
@@ -88,13 +93,13 @@ public class RestService {
                     public void onResponse(JSONObject response) {
                         Log.w("Rest (getState()):", "stato corrente " + response);
                         try {
-                            String status = response.getString("status");
+                            String status = response.getString("touchSensor");
                             activity.getTvAccess().setVisibility(View.VISIBLE);
-                            if(status.equals("ON")) {
+                            if(status.equals("OFF")) {
                                 activity.getTvAccess().setText(R.string.access_ok);
                                 activity.getTvAccess().setTextColor(Color.GREEN);
                             }
-                            else if(status.equals("OFF")){
+                            else if(status.equals("ON")){
                                 activity.getTvAccess().setText(R.string.access_deny);
                                 activity.getTvAccess().setTextColor(Color.RED);
                             }                } catch (JSONException e) {
@@ -104,7 +109,6 @@ public class RestService {
                             JSONObject jsonUser = (JSONObject) response.get("user");
                             activity.getUser().setToken(jsonUser.getString("token"));
                             activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
-                            //activity.getUser().notify();
                         } catch (JSONException e) {
                         }
                     }

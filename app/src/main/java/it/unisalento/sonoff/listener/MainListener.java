@@ -2,13 +2,8 @@ package it.unisalento.sonoff.listener;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.widget.CompoundButton;
-
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.restService.RestService;
@@ -38,7 +33,7 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnAccess) {
-            restService.getState(mainActivity);
+            restService.getTouchSensorState(mainActivity);
         }
         if(view.getId() == R.id.tvDashboard){
             Intent intent = new Intent(mainActivity, DashboardActivity.class);

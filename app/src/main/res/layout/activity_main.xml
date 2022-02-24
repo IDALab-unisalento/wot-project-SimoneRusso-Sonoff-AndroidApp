@@ -100,6 +100,54 @@
                     android:orientation="vertical"
                     android:paddingBottom="10dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PIR Sensor"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <ImageView
+                            android:id="@+id/pirSensorImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="3dp"
+                            android:src="@drawable/ic_baseline_circle_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Touch Sensor"
+                            android:textColor="@color/black"
+                            android:textSize="25dp" />
+
+                        <ImageView
+                            android:id="@+id/touchSensorImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="3dp"
+                            android:src="@drawable/ic_baseline_circle_gray" />
+
+
+                    </LinearLayout>
 
                     <ToggleButton
                         android:id="@+id/toggleBtn"
@@ -107,22 +155,23 @@
                         android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/custom_toggle"
                         android:paddingTop="25sp"
                         android:text="@string/lock"
                         android:textOff=""
-                        android:textOn=""
-                        android:layout_marginBottom="10dp"/>
+                        android:textOn="" />
+
                     <TextView
                         android:id="@+id/tvAccess"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="-10dp"
+                        android:layout_marginBottom="30dp"
                         android:text=""
                         android:textSize="20sp"
-                        android:visibility="gone"
-                        android:layout_marginTop="-10dp"
-                        android:layout_marginBottom="30dp"/>
+                        android:visibility="gone" />
 
 
                 </LinearLayout>

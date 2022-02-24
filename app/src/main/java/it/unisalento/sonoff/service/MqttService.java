@@ -50,7 +50,9 @@ public class MqttService extends Service {
 
     private Handler mHandler;
     private ArrayList<Integer> idsNot = new ArrayList();
-    private static final String REQUEST_ACCEPT = "Notification";
+    private static final String STATUS_ONE = "1";
+    private static final String PIR_SENSOR = "2";
+    private static final String TOUCH_SENSOR = "3";
 
     private static final String TAG = "mqttservice";
     private static boolean hasWifi = false;
@@ -59,6 +61,9 @@ public class MqttService extends Service {
     private volatile IMqttAsyncClient mqttClient;
     private String uniqueID;
     private final String status1Topic = "stat/tasmota_8231A8/POWER1";
+    private final String pirSensorTopic = "stat/tasmota_8231A8/POWER2";
+    private final String touchSensorTopic = "stat/tasmota_8231A8/POWER3";
+    private final String cmdTopic1 = "cmnd/tasmota_8231A8/POWER1";
 
 
     class MQTTBroadcastReceiver extends BroadcastReceiver {
@@ -167,11 +172,46 @@ public class MqttService extends Service {
                 public void messageArrived(String topic, MqttMessage msg){
                     Log.i(TAG, "Message arrived from topic " + topic);
                     Log.i(TAG, msg.toString());
-                    showNotification("Cambio di stato", msg.toString());
+
                     LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
-                    Intent intent = new Intent(REQUEST_ACCEPT);
-                    intent.putExtra("status", msg.toString());
-                    broadcaster.sendBroadcast(intent);
+                    Intent intent;
+
+                    if(topic.equals(pirSensorTopic)){
+                        intent = new Intent(PIR_SENSOR);
+                        if(msg.toString().equals("ON")){
+                            showNotification("Movimento rilevato", "Qualcuno si è avvicinato all'area protetta");
+                            intent.putExtra("pirSensor", msg.toString());
+                            broadcaster.sendBroadcast(intent);
+                        }
+                        else if(msg.toString().equals("OFF")){
+                            intent.putExtra("pirSensor", msg.toString());
+                            broadcaster.sendBroadcast(intent);
+                        }
+                    }
+
+                    if(topic.equals(touchSensorTopic)){
+                        intent = new Intent(TOUCH_SENSOR);
+                        if(msg.toString().equals("OFF")) {
+
+                                intent.putExtra("touchSensor", msg.toString());
+                                broadcaster.sendBroadcast(intent);
+                                showNotification("Area prottetta violata", "Qualcuno ha violato l'area protetta");
+                                //mqttClient.publish(cmdTopic1, msg);
+                        }
+
+                        else if(msg.toString().equals("ON")){
+                            intent.putExtra("touchSensor", msg.toString());
+                            broadcaster.sendBroadcast(intent);
+                        }
+                    }
+
+                    if (topic.equals(status1Topic)){
+                        showNotification("Cambio di stato", msg.toString());
+                        intent = new Intent(STATUS_ONE);
+                        intent.putExtra("status", msg.toString());
+                        broadcaster.sendBroadcast(intent);
+                    }
+
                 }
 
                 @Override
@@ -181,6 +221,9 @@ public class MqttService extends Service {
             });
 
             mqttClient.subscribe(status1Topic , 2);
+            mqttClient.subscribe(pirSensorTopic , 2);
+            mqttClient.subscribe(touchSensorTopic , 2);
+
 
         } catch (MqttSecurityException e) {
             e.printStackTrace();
