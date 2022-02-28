@@ -30,7 +30,7 @@ import it.unisalento.sonoff.view.MainActivity;
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
     //String address = "http://192.168.1.100:8082";
-    String address = "http://10.3.141.130:8082";
+    String address = "http://10.3.141.130:8081";
     String clientId;
     Context context;
 
@@ -258,7 +258,7 @@ public class RestService {
                         activity.getTvErDash().setText(R.string.operation_completed);
                         activity.getTvErDash().setVisibility(View.VISIBLE);
                         try {
-                            if(response.getString("token")!="null") {
+                            if(!response.getString("token").equals("null")) {
                                 activity.getUser().setToken((String) response.get("token"));
                                 activity.getUser().setRefreshToken((String) response.get("refreshToken"));
                             }
