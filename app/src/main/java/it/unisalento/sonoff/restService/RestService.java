@@ -8,29 +8,32 @@ import android.graphics.Color;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.StringRequestListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.Credential;
+import it.unisalento.sonoff.model.Event;
 import it.unisalento.sonoff.model.User;
 import it.unisalento.sonoff.utils.ToastRunnable;
 import it.unisalento.sonoff.view.DashboardActivity;
+import it.unisalento.sonoff.view.EventLogActivity;
 import it.unisalento.sonoff.view.LoginActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
     //String address = "http://192.168.1.100:8082";
-    String address = "http://10.3.141.130:8081";
+    String address = "http://10.3.141.130:8080";
     String clientId;
     Context context;
 
@@ -55,19 +58,22 @@ public class RestService {
                             String pirSensor = response.getString("pirSensor");
                             activity.getToggleButton().setChecked(status.equals("ON"));
                             activity.getProgressDialog().dismiss();
+
                             if(touchSensor.equals("ON"))
-                                activity.getTouchSensorImage().setImageResource(R.drawable.ic_baseline_circle_green);//TODO: berificare uscita sensori
+                                activity.getTouchSensorImage().setImageResource(R.drawable.ic_baseline_circle_green);
+
                             if(pirSensor.equals("ON"))
-                                activity.getPirSensorImage().setImageResource(R.drawable.ic_baseline_circle_green); //TODO: berificare uscita sensori
+                                activity.getPirSensorImage().setImageResource(R.drawable.ic_baseline_circle_green);
+
+                            if(!response.isNull("user")) {
+                                JSONObject jsonUser = (JSONObject) response.get("user");
+                                activity.getUser().setToken(jsonUser.getString("token"));
+                                activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            JSONObject jsonUser = (JSONObject) response.get("user");
-                            activity.getUser().setToken(jsonUser.getString("token"));
-                            activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
-                        } catch (JSONException e) {
-                        }
+
                     }
 
                     @Override
@@ -102,15 +108,17 @@ public class RestService {
                             else if(status.equals("ON")){
                                 activity.getTvAccess().setText(R.string.access_deny);
                                 activity.getTvAccess().setTextColor(Color.RED);
-                            }                } catch (JSONException e) {
+                            }
+
+                            if(response.isNull("user")){
+                                JSONObject jsonUser = (JSONObject) response.get("user");
+                                activity.getUser().setToken(jsonUser.getString("token"));
+                                activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
+                            }
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            JSONObject jsonUser = (JSONObject) response.get("user");
-                            activity.getUser().setToken(jsonUser.getString("token"));
-                            activity.getUser().setRefreshToken(jsonUser.getString("refreshToken"));
-                        } catch (JSONException e) {
-                        }
+
                     }
 
                     @Override
@@ -149,6 +157,7 @@ public class RestService {
                                 activity.getUser().setRefreshToken(response.getString("refreshToken"));
                             }
                         } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -187,6 +196,7 @@ public class RestService {
                                 activity.getUser().setRefreshToken(response.getString("refreshToken"));
                             }
                         } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -238,7 +248,7 @@ public class RestService {
                         Log.e("autentication err:", "onError: ", anError);
                         activity.getTvErLog().setVisibility(View.VISIBLE);
                         activity.getTvErLog().setTextColor(Color.RED);
-                        activity.getTvErLog().setText("Username o password errati");
+                        activity.getTvErLog().setText(R.string.wrongUsernemaOrPassword);
                     }
                 });
     }
@@ -271,6 +281,45 @@ public class RestService {
                     public void onError(ANError anError) {
                         activity.getTvErDash().setText(R.string.error);
                         activity.getTvErDash().setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
+    //TODO: vedere se funziona
+    public void getEventLog(EventLogActivity activity){
+        AndroidNetworking.post(address+"/getEventLog")
+                .setPriority(Priority.LOW)
+                .addApplicationJsonBody(activity.getUser())
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("getEventLog", "onResponse: ");
+                        Event event;
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("eventDtoList");
+                            for(int i = 0; i<jsonArray.length(); i++){
+                                event = new Event();
+                                event.setEventType(jsonArray.getJSONObject(i).getString("event_type"));
+                                event.setDate(jsonArray.getJSONObject(i).getString("date"));
+                                if(!jsonArray.getJSONObject(i).isNull("userDTO"))
+                                    event.setUser(jsonArray.getJSONObject(i).getJSONObject("userDTO").getString("username"));
+                                activity.getEventList().add(event);
+                            }
+                            if(!response.isNull("loggedUser")) {
+                                activity.getUser().setToken(response.getJSONObject("loggedUser").getString("token"));
+                                activity.getUser().setRefreshToken(response.getJSONObject("loggedUser").getString("refreshToken"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("TAG", "onResponse: ");
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e("Rest (getStatus()):", anError.toString());
+                        Log.e("Rest (getStatus()):", anError.getErrorBody());
                     }
                 });
     }
