@@ -45,7 +45,7 @@ import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class MqttService extends Service {
-    private final String ip = "10.3.141.130";
+    private final String ip = "10.3.141.1";
     private final String port = "1883";
 
     private Handler mHandler;
@@ -196,7 +196,11 @@ public class MqttService extends Service {
                                 intent.putExtra("touchSensor", msg.toString());
                                 broadcaster.sendBroadcast(intent);
                                 showNotification("Area prottetta violata", "Qualcuno ha violato l'area protetta");
-                                //mqttClient.publish(cmdTopic1, msg);
+                            try {
+                                mqttClient.publish(cmdTopic1, msg);
+                            } catch (MqttException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         else if(msg.toString().equals("ON")){

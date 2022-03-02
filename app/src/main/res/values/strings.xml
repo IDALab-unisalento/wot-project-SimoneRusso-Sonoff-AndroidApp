@@ -7,6 +7,7 @@
     <string name="access_ok">Accesso consentito</string>
     <string name="access_deny">Accesso non consentito</string>
     <string name="dashboard"><u>Accedi alla dashboard</u></string>
+    <string name="logEvent"><u>Accedi al Log degli eventi</u></string>
     <string name="add_user">Aggiungi utente</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -20,5 +21,7 @@
     <string name="username">Username</string>
     <string name="operation_completed">Operazione completata</string>
     <string name="error">Si è verificat un errore</string>
+    <string name="wrongUsernemaOrPassword">"Username o password errati"</string>
+    <string name="tvLogEventTitle">Log Eventi</string>
 
 </resources>

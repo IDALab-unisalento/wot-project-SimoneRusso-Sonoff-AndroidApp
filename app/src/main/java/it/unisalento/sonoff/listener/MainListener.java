@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.view.DashboardActivity;
+import it.unisalento.sonoff.view.EventLogActivity;
 import it.unisalento.sonoff.view.MainActivity;
 
 public class MainListener implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -34,6 +35,12 @@ public class MainListener implements CompoundButton.OnCheckedChangeListener, Vie
     public void onClick(View view) {
         if(view.getId() == R.id.btnAccess) {
             restService.getTouchSensorState(mainActivity);
+        }
+        if(view.getId() == R.id.tvLogEvent){
+            Intent intent = new Intent(mainActivity, EventLogActivity.class);
+            intent.putExtra("user", mainActivity.getUser());
+            mainActivity.startActivity(intent);
+
         }
         if(view.getId() == R.id.tvDashboard){
             Intent intent = new Intent(mainActivity, DashboardActivity.class);

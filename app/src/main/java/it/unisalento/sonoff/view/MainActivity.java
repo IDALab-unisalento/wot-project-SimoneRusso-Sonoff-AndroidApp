@@ -1,13 +1,11 @@
 package it.unisalento.sonoff.view;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -36,11 +31,11 @@ public class MainActivity extends AppCompatActivity{
     private ImageView touchSensorImage;
     private ImageView pirSensorImage;
     private TextView tvAccess;
-    private static final String REQUEST_ACCEPT = "Notification";
     private User user;
     private ProgressDialog progressDialog;
     private Intent mymqttservice_intent;
     private TextView tvDashboard;
+    private TextView tvLogEvent;
     private Button button;
     private MainListener mainListener;
     private RestService restService;
@@ -68,6 +63,7 @@ public class MainActivity extends AppCompatActivity{
             toggleButton = findViewById(R.id.toggleBtn);
             tvAccess = findViewById(R.id.tvAccess);
             tvDashboard = findViewById(R.id.tvDashboard);
+            tvLogEvent = findViewById(R.id.tvLogEvent);
             button = findViewById(R.id.btnAccess);
             pirSensorImage = findViewById(R.id.pirSensorImage);
             touchSensorImage = findViewById(R.id.touchSensorImage);
@@ -83,6 +79,7 @@ public class MainActivity extends AppCompatActivity{
 
             toggleButton.setOnCheckedChangeListener(mainListener);
             button.setOnClickListener(mainListener);
+            tvLogEvent.setOnClickListener(mainListener);
 
             if(user.getRole().equals("admin")){
                 tvDashboard.setVisibility(View.VISIBLE);
@@ -100,40 +97,40 @@ public class MainActivity extends AppCompatActivity{
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(STATUS_ONE)) {
-                String status = intent.getStringExtra("status");
-                Log.d("receiver", "Got message: " + status);
-                toggleButton.setChecked(status.equals("ON"));
-            }
-
-            else if (intent.getAction().equals(PIR_SENSOR)){
-                String pir = intent.getStringExtra("pirSensor");
-                Log.d("receiver", "Got message: " + pir);
-                if(pir.equals("ON")){
-                    pirSensorImage.setImageResource(R.drawable.ic_baseline_circle_green);
-                }
-                else{
-                    pirSensorImage.setImageResource(R.drawable.ic_baseline_circle_gray);
-                }
-            }
-
-            else if (intent.getAction().equals(TOUCH_SENSOR)){
-                String touch = intent.getStringExtra("touchSensor");
-                Log.d("receiver", "Got message: " + touch);
-                if(touch.equals("ON")){
-                    touchSensorImage.setImageResource(R.drawable.ic_baseline_circle_green);
-                    if(tvAccess.getVisibility()==View.VISIBLE){
-                        tvAccess.setText(R.string.access_deny);
-                        tvAccess.setTextColor(Color.RED);
+            switch (intent.getAction()) {
+                case STATUS_ONE:
+                    String status = intent.getStringExtra("status");
+                    Log.d("receiver", "Got message: " + status);
+                    toggleButton.setChecked(status.equals("ON"));
+                    break;
+                case PIR_SENSOR:
+                    String pir = intent.getStringExtra("pirSensor");
+                    Log.d("receiver", "Got message: " + pir);
+                    if (pir.equals("ON")) {
+                        pirSensorImage.setImageResource(R.drawable.ic_baseline_circle_green);
+                    } else {
+                        pirSensorImage.setImageResource(R.drawable.ic_baseline_circle_gray);
                     }
-                }
-                else{
-                    touchSensorImage.setImageResource(R.drawable.ic_baseline_circle_gray);
-                    if((tvAccess.getVisibility()==View.VISIBLE)){
-                        tvAccess.setText(R.string.access_ok);
-                        tvAccess.setTextColor(Color.GREEN);
+                    break;
+                case TOUCH_SENSOR:
+                    String touch = intent.getStringExtra("touchSensor");
+                    Log.d("receiver", "Got message: " + touch);
+                    if (touch.equals("ON")) {
+                        touchSensorImage.setImageResource(R.drawable.ic_baseline_circle_green);
+                        if (tvAccess.getVisibility() == View.VISIBLE) {
+                            tvAccess.setText(R.string.access_deny);
+                            tvAccess.setTextColor(Color.RED);
+                        }
+                    } else {
+                        touchSensorImage.setImageResource(R.drawable.ic_baseline_circle_gray);
+                        if ((tvAccess.getVisibility() == View.VISIBLE)) {
+                            tvAccess.setText(R.string.access_ok);
+                            tvAccess.setTextColor(Color.GREEN);
+                        }
                     }
-                }
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + intent.getAction());
             }
 
         }
