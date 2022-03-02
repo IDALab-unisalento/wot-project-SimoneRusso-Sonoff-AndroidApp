@@ -18,12 +18,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 
 import it.unisalento.sonoff.R;
 import it.unisalento.sonoff.model.Credential;
 import it.unisalento.sonoff.model.Event;
 import it.unisalento.sonoff.model.User;
+import it.unisalento.sonoff.utils.ListViewAdapter;
 import it.unisalento.sonoff.utils.ToastRunnable;
 import it.unisalento.sonoff.view.DashboardActivity;
 import it.unisalento.sonoff.view.EventLogActivity;
@@ -32,8 +34,8 @@ import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressLint({"HardwareIds", "UseSwitchCompatOrMaterialCode"})
 public class RestService {
-    //String address = "http://192.168.1.100:8082";
-    String address = "http://10.3.141.130:8080";
+    String address = "http://192.168.1.177:8080";
+    //String address = "http://10.3.141.130:8080";
     String clientId;
     Context context;
 
@@ -285,7 +287,6 @@ public class RestService {
                 });
     }
 
-    //TODO: vedere se funziona
     public void getEventLog(EventLogActivity activity){
         AndroidNetworking.post(address+"/getEventLog")
                 .setPriority(Priority.LOW)
@@ -294,7 +295,6 @@ public class RestService {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getEventLog", "onResponse: ");
                         Event event;
                         try {
                             JSONArray jsonArray = response.getJSONArray("eventDtoList");
@@ -313,7 +313,11 @@ public class RestService {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d("TAG", "onResponse: ");
+                        Collections.reverse(activity.getEventList());
+                        ListViewAdapter listViewAdapter = new ListViewAdapter(activity.getApplicationContext(), activity.getEventList());
+                        activity.getListView().setAdapter(listViewAdapter);
+                        activity.getCountTextView().setText("N° eventi :"+activity.getEventList().size());
+                        activity.getProgressDialog().dismiss();
                     }
 
                     @Override

@@ -27,6 +27,8 @@
         android:textStyle="bold"
         android:transitionName="tvLogEventTitle" />
 
+
+
     <ImageView
         android:id="@+id/circle1"
         android:layout_width="134dp"
@@ -70,36 +72,35 @@
         android:src="@drawable/circletransparant"
         tools:ignore="ContentDescription" />
 
-    <ScrollView
-        android:id="@+id/sv"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
+        android:layout_below="@id/bgHeader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bgHeader">
-
-        <RelativeLayout
+        android:layout_margin="10dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp"
+        android:layout_above="@id/circle3">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginLeft="3dp"/>
+            <ListView
+                android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="4dp">
+                android:layout_gravity="center_horizontal"/>
 
-                <ScrollView
-                    android:id="@+id/sv2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/cv">
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 
-
-                </ScrollView>
-
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-    </ScrollView>
 
 </RelativeLayout>

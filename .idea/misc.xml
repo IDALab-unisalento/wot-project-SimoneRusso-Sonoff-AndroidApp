@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.221875" />
         <entry key="app/src/main/res/drawable/bg_ui.xml" value="0.14276315789473684" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.17617753623188406" />
-        <entry key="app/src/main/res/layout/activity_event_log.xml" value="0.328125" />
+        <entry key="app/src/main/res/layout/activity_event_log.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.13256578947368422" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/item_event.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/text_row_item.xml" value="0.221875" />
       </map>
     </option>
   </component>

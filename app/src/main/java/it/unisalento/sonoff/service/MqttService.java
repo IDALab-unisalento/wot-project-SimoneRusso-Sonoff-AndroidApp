@@ -36,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import it.unisalento.sonoff.R;
@@ -45,7 +46,8 @@ import it.unisalento.sonoff.view.MainActivity;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class MqttService extends Service {
-    private final String ip = "10.3.141.1";
+    //private final String ip = "10.3.141.1";
+    private final String ip = "192.168.1.177";
     private final String port = "1883";
 
     private Handler mHandler;
@@ -192,12 +194,13 @@ public class MqttService extends Service {
                     if(topic.equals(touchSensorTopic)){
                         intent = new Intent(TOUCH_SENSOR);
                         if(msg.toString().equals("OFF")) {
-
                                 intent.putExtra("touchSensor", msg.toString());
                                 broadcaster.sendBroadcast(intent);
                                 showNotification("Area prottetta violata", "Qualcuno ha violato l'area protetta");
                             try {
-                                mqttClient.publish(cmdTopic1, msg);
+                                MqttMessage m = new MqttMessage();
+                                m.setPayload("ON".getBytes(StandardCharsets.UTF_8));
+                                mqttClient.publish(cmdTopic1, m);
                             } catch (MqttException e) {
                                 e.printStackTrace();
                             }
