@@ -14,23 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.FullScreen"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".view.EventLogActivity"
+            android:exported="true" />
         <!-- MqttService -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-        <service android:name=".service.MqttService"
-            android:exported="false"
-            android:enabled="true"/>
-        <activity android:name=".view.DashboardActivity"/>
+        <service
+            android:name=".service.MqttService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".view.DashboardActivity" />
         <activity
             android:name=".view.LoginActivity"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.MainActivity"/>
+        <activity android:name=".view.MainActivity" />
     </application>
 
 </manifest>
