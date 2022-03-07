@@ -28,10 +28,6 @@ public class Event {
     }
 
     public void setDate(String date) {
-        String[] temp = date.replace("T", " ").substring(0,19).split(" ");
-        String y = temp[0].split("-")[0];
-        String m = temp[0].split("-")[1];
-        String d = temp[0].split("-")[2];
-        this.date = d+"-"+m+"-"+y+", "+temp[1];
+        this.date = date;
     }
 }
