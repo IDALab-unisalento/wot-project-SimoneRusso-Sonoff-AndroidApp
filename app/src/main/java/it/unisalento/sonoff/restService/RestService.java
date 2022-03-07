@@ -180,6 +180,7 @@ public class RestService {
                 });
     }
 
+
     public void changeStatusOFF(MainActivity activity) {
         AndroidNetworking.post(address+"/changeStatusOFF/"+clientId)
                 .setPriority(Priority.LOW)

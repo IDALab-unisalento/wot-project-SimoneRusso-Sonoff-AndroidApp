@@ -40,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import it.unisalento.sonoff.R;
+import it.unisalento.sonoff.restService.RestService;
 import it.unisalento.sonoff.utils.ToastRunnable;
 import it.unisalento.sonoff.view.MainActivity;
 
@@ -47,7 +48,7 @@ import it.unisalento.sonoff.view.MainActivity;
 @SuppressWarnings("FieldCanBeLocal")
 public class MqttService extends Service {
     //private final String ip = "10.3.141.1";
-    private final String ip = "192.168.1.177";
+    private final String ip = "192.168.1.100";
     private final String port = "1883";
 
     private Handler mHandler;
@@ -197,13 +198,13 @@ public class MqttService extends Service {
                                 intent.putExtra("touchSensor", msg.toString());
                                 broadcaster.sendBroadcast(intent);
                                 showNotification("Area prottetta violata", "Qualcuno ha violato l'area protetta");
-                            try {
+                            /*try {
                                 MqttMessage m = new MqttMessage();
                                 m.setPayload("ON".getBytes(StandardCharsets.UTF_8));
                                 mqttClient.publish(cmdTopic1, m);
                             } catch (MqttException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
                         }
 
                         else if(msg.toString().equals("ON")){
@@ -256,6 +257,7 @@ public class MqttService extends Service {
                     break;
                 default:
                     Log.e(TAG, "a" + e.getMessage());
+                    Log.e(TAG, "a" + e.getCause());
             }
         }
         mHandler.post(new ToastRunnable("WE ARE ONLINE!", 500, getApplicationContext()));
